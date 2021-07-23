@@ -1,0 +1,22 @@
+enableFeaturePreview('VERSION_CATALOGS')
+
+rootProject.name = "Sample"
+include ':app'
+include ':library'
+
+
+dependencyResolutionManagement {
+    versionCatalogs {
+        libs {
+            alias('lang.kotlin').to('org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.21')
+            alias('androidx.core').to('androidx.core:core:1.6.0')
+            alias('androidx.fragment').to('androidx.fragment:fragment:1.3.5')
+            alias('test.junit').to('junit:junit:4.13.1')
+            alias('test.androidx.test.core').to('androidx.test:core-ktx:1.4.0')
+            alias('test.robolectric').to('org.robolectric:robolectric:4.6.1')
+            alias('test.mockito.inline').to('org.mockito:mockito-inline:3.11.2')
+            alias('test.mockito.kotlin').to('org.mockito.kotlin:mockito-kotlin:3.2.0')
+
+        }
+    }
+}
