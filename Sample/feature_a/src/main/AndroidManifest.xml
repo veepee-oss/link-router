@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.veepee.feature.a">
+
+    <application>
+        <activity
+            android:name="com.veepee.feature.a.AActivity"
+            android:label="AActivity"
+            android:theme="@style/Theme.Sample" />
+    </application>
+
+</manifest>
