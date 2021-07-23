@@ -3,6 +3,18 @@
 This library contains the basic infrastructure for routing deepLinks, activities and fragments within a multi-module application
 in a way that a feature module does not need to explicitly depend of another.
 
+### Why did we write this library?
+Not every project can follow the single Activity recommendation from Google, not every Activity has a public DeepLink to its screens.  
+Those are just some of the situations we find ourselves while working in a project that has been developed for many years.  
+We have screens that should only be accessed after the user is logged in, does Navigation Component help us with that?
+So we developed this library. 
+
+### This library does less, so you can do more
+There is no magic here, not even code generation, you will need to write code to make it work. 
+This library just gives you access to Intents and Fragments instances, it does not start activities for you or commit fragments.
+We will just give you access to things that you would would not have access without direct access to the classes.
+Ok, Ok, we do start activities when routing DeepLinks, but this is usually fine since we need to start a whole stack of Activities for you.
+
 ### Usage
 The basic concept is the same for all routing, at the app startup we register all deeplink, activities and fragments mappers.
 And in a separated module (like :routes) we share basic implementations that works as indirections to the real implementations.
