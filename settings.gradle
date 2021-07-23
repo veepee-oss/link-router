@@ -1,7 +1,6 @@
 enableFeaturePreview('VERSION_CATALOGS')
 
-rootProject.name = "Sample"
-include ':app'
+rootProject.name = "Link-Router"
 include ':library'
 
 

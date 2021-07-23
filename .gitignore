@@ -1,4 +1,5 @@
 # Built application files
+*.idea/*
 *.apk
 *.aar
 *.ap_
