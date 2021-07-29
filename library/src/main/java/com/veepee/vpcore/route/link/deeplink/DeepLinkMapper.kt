@@ -4,7 +4,7 @@ import com.veepee.vpcore.route.link.activity.ActivityLink
 import com.veepee.vpcore.route.link.activity.ActivityName
 
 interface DeepLinkMapper<T : DeepLink> {
-    val supportedSchemes: Array<Scheme>
+    val supportedSchemes: Array<out Scheme>
     val supportedAuthority: String
 
     fun stack(deepLink: T): Array<ActivityLink<ActivityName>>
