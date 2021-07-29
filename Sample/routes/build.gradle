@@ -38,5 +38,5 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.material
 
-    api 'com.veepee.vpcore:link-route:1.0.0'
+    api 'com.veepee.vpcore.link-router:link-router:1.0.0'
 }

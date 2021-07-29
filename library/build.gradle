@@ -63,8 +63,8 @@ afterEvaluate {
         }
         publications {
             release(MavenPublication) {
-                groupId "com.veepee.vpcore"
-                artifactId "link-route"
+                groupId "com.veepee.vpcore.link-router"
+                artifactId "link-router"
                 version System.getenv('RELEASE_VERSION')
                 from components.release
                 artifact(sourceJar)

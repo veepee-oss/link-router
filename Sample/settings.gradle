@@ -7,7 +7,7 @@ include ':feature_b'
 
 includeBuild('../') {
     dependencySubstitution {
-        substitute module('com.veepee.vpcore:link-route') using project(':library')
+        substitute module('com.veepee.vpcore.link-router:link-router') using project(':library')
     }
 }
 
