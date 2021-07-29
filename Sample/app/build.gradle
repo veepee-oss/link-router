@@ -40,6 +40,8 @@ dependencies {
     implementation libs.material
     implementation libs.androidx.constraint.layout
 
+    testImplementation libs.test.junit
+
     implementation project(":feature_a")
     implementation project(":feature_b")
     implementation project(":routes")
