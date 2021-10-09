@@ -13,29 +13,26 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.feature.b
+package com.veepee.feature.login
 
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import com.veepee.routes.LoginStatus
-import com.veepee.routes.feature_a.FragmentALink
+import com.veepee.routes.login.LoginActivityParameter
 import com.veepee.routes.router
+import com.veepee.vpcore.route.requireLinkParameter
 
-class BActivity : AppCompatActivity() {
+class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.b_activity)
+        setContentView(R.layout.login_activity)
 
-        if (savedInstanceState == null) {
-            val fragment = router.fragmentFor(FragmentALink)
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
-                .commit()
-        }
-        findViewById<View>(R.id.logout_button)
+        findViewById<View>(R.id.login_button)
             .setOnClickListener {
-                LoginStatus.isLogged = false
+                LoginStatus.isLogged = true
+                val parameter = requireLinkParameter<LoginActivityParameter>()
+                router.route(this, parameter.deepLink)
                 finish()
             }
     }
