@@ -22,14 +22,9 @@ import com.veepee.vpcore.route.activity.route.TestActivityBLink
 import com.veepee.vpcore.route.activity.route.TestActivityBParameter
 import com.veepee.vpcore.route.deeplink.route.TestUriDeepLinkMapper
 import com.veepee.vpcore.route.link.activity.ActivityLinkRouter
-import com.veepee.vpcore.route.link.deeplink.DeepLink
-import com.veepee.vpcore.route.link.deeplink.DeepLinkMapper
-import com.veepee.vpcore.route.link.deeplink.DeepLinkRouterImpl
-import com.veepee.vpcore.route.link.deeplink.NoDeepLinkMapperException
-import com.veepee.vpcore.route.link.deeplink.StackBuilder
-import com.veepee.vpcore.route.link.deeplink.StackBuilderFactory
-import com.veepee.vpcore.route.link.deeplink.chain.Chain
-import com.veepee.vpcore.route.link.deeplink.chain.ChainFactory
+import com.veepee.vpcore.route.link.deeplink.*
+import com.veepee.vpcore.route.link.interceptor.Chain
+import com.veepee.vpcore.route.link.interceptor.ChainFactory
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
@@ -39,8 +34,8 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
 class DeepLinkRouterImplTest {
-    private val chainFactory: ChainFactory = mock()
-    private val chain: Chain = mock()
+    private val chainFactory: ChainFactory<DeepLinkMapper<out DeepLink>, DeepLink> = mock()
+    private val chain: Chain<DeepLinkMapper<out DeepLink>, DeepLink> = mock()
     private val activityLinkRouter: ActivityLinkRouter = mock()
     private val stackBuilderFactory: StackBuilderFactory = mock()
     private val stackBuilder: StackBuilder = mock()

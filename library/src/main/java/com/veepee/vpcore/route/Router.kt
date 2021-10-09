@@ -19,17 +19,15 @@ import com.veepee.vpcore.route.link.activity.ActivityLinkRouter
 import com.veepee.vpcore.route.link.activity.ActivityLinkRouterImpl
 import com.veepee.vpcore.route.link.activity.ActivityName
 import com.veepee.vpcore.route.link.activity.ActivityNameMapper
-import com.veepee.vpcore.route.link.deeplink.DeepLink
-import com.veepee.vpcore.route.link.deeplink.DeepLinkMapper
-import com.veepee.vpcore.route.link.deeplink.DeepLinkRouter
-import com.veepee.vpcore.route.link.deeplink.DeepLinkRouterImpl
-import com.veepee.vpcore.route.link.deeplink.StackBuilderFactoryImpl
-import com.veepee.vpcore.route.link.deeplink.chain.ChainFactoryImpl
+import com.veepee.vpcore.route.link.activity.chain.ActivityLinkInterceptor
+import com.veepee.vpcore.route.link.deeplink.*
 import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
 import com.veepee.vpcore.route.link.fragment.FragmentLinkRouter
 import com.veepee.vpcore.route.link.fragment.FragmentLinkRouterImpl
 import com.veepee.vpcore.route.link.fragment.FragmentName
 import com.veepee.vpcore.route.link.fragment.FragmentNameMapper
+import com.veepee.vpcore.route.link.fragment.chain.FragmentLinkInterceptor
+import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 
 /**
  * Router delegates detail implementations to other implementations, but is the responsible for
@@ -40,6 +38,8 @@ interface Router : DeepLinkRouter, ActivityLinkRouter, FragmentLinkRouter {
     interface Builder {
         fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): Builder
         fun add(deepLinkInterceptor: DeepLinkInterceptor): Builder
+        fun add(activityLinkInterceptor: ActivityLinkInterceptor): Builder
+        fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): Builder
         fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): Builder
         fun add(fragmentNameMapper: FragmentNameMapper<out FragmentName>): Builder
         fun newBuilder(): Builder
@@ -67,6 +67,10 @@ class RouterBuilder : Router.Builder {
 
     private val deepLinkInterceptorsRegistry = mutableListOf<DeepLinkInterceptor>()
 
+    private val activityLinkInterceptorsRegistry = mutableListOf<ActivityLinkInterceptor>()
+
+    private val fragmentLinkInterceptorsRegistry = mutableListOf<FragmentLinkInterceptor>()
+
     override fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): Router.Builder {
         deepLinkMappersRegistry.add(deepLinkMapper)
         return this
@@ -74,6 +78,16 @@ class RouterBuilder : Router.Builder {
 
     override fun add(deepLinkInterceptor: DeepLinkInterceptor): Router.Builder {
         deepLinkInterceptorsRegistry.add(deepLinkInterceptor)
+        return this
+    }
+
+    override fun add(activityLinkInterceptor: ActivityLinkInterceptor): Router.Builder {
+        activityLinkInterceptorsRegistry.add(activityLinkInterceptor)
+        return this
+    }
+
+    override fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): Router.Builder {
+        fragmentLinkInterceptorsRegistry.add(fragmentLinkInterceptor)
         return this
     }
 
@@ -93,19 +107,32 @@ class RouterBuilder : Router.Builder {
         builder.fragmentNameMappersRegistry.addAll(fragmentNameMappersRegistry)
         builder.deepLinkMappersRegistry.addAll(deepLinkMappersRegistry)
         builder.deepLinkInterceptorsRegistry.addAll(deepLinkInterceptorsRegistry)
+        builder.activityLinkInterceptorsRegistry.addAll(activityLinkInterceptorsRegistry)
+        builder.fragmentLinkInterceptorsRegistry.addAll(fragmentLinkInterceptorsRegistry)
         return builder
     }
 
     override fun build(): Router {
-        val activityLinkRouter = ActivityLinkRouterImpl(activityNameMappersRegistry.toSet())
-        val fragmentLinkRouter = FragmentLinkRouterImpl(fragmentNameMappersRegistry.toSet())
+        val activityLinkRouter = ActivityLinkRouterImpl(
+            activityNameMappersRegistry.toSet(),
+            ChainFactoryImpl(
+                activityLinkInterceptorsRegistry.toList()
+            )
+        )
+
+        val fragmentLinkRouter = FragmentLinkRouterImpl(
+            fragmentNameMappersRegistry.toSet(),
+            ChainFactoryImpl(
+                fragmentLinkInterceptorsRegistry.toList()
+            )
+        )
 
         val deepLinkRouter = DeepLinkRouterImpl(
             deepLinkMappersRegistry.toSet(),
             activityLinkRouter,
             StackBuilderFactoryImpl(),
             ChainFactoryImpl(
-                deepLinkInterceptorsRegistry
+                deepLinkInterceptorsRegistry.toList()
             )
         )
         return RouterImpl(

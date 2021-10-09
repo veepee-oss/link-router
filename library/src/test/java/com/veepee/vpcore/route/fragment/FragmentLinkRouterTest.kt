@@ -25,6 +25,7 @@ import com.veepee.vpcore.route.link.fragment.FragmentLinkRouterImpl
 import com.veepee.vpcore.route.link.fragment.FragmentName
 import com.veepee.vpcore.route.link.fragment.FragmentNameMapper
 import com.veepee.vpcore.route.link.fragment.NoFragmentNameMapperException
+import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 import com.veepee.vpcore.route.requireLinkParameter
 import org.junit.Assert
 import org.junit.Assert.assertEquals
@@ -40,7 +41,7 @@ class FragmentLinkRouterTest {
 
     @Test
     fun `should return fragment for registered FragmentNameMapper`() {
-        val router = FragmentLinkRouterImpl(mappers)
+        val router = FragmentLinkRouterImpl(mappers, ChainFactoryImpl(emptyList()))
         val fragmentA = router.fragmentFor(TestFragmentALink)
         assertEquals(fragmentA::class.java, TestFragmentA::class.java)
 
@@ -50,7 +51,7 @@ class FragmentLinkRouterTest {
 
     @Test
     fun `should retrieve parameter from Fragment`() {
-        val router = FragmentLinkRouterImpl(mappers)
+        val router = FragmentLinkRouterImpl(mappers, ChainFactoryImpl(emptyList()))
         val fragment = router.fragmentFor(TestFragmentBLink(testFragmentBParameter))
         assertEquals(
             fragment.requireLinkParameter<TestFragmentBParameter>(),
@@ -61,7 +62,7 @@ class FragmentLinkRouterTest {
     @Test
     fun `should raise an error when the there is no mapper for a given ActivityLink`() {
 
-        val router = FragmentLinkRouterImpl(emptySet())
+        val router = FragmentLinkRouterImpl(emptySet(), ChainFactoryImpl(emptyList()))
 
         Assert.assertThrows(NoFragmentNameMapperException::class.java) {
             router.fragmentFor(TestFragmentALink)

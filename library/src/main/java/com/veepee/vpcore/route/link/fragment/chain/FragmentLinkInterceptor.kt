@@ -13,10 +13,12 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.vpcore.route.link.deeplink.chain
+package com.veepee.vpcore.route.link.fragment.chain
 
+import com.veepee.vpcore.route.link.fragment.FragmentLink
+import com.veepee.vpcore.route.link.fragment.FragmentName
+import com.veepee.vpcore.route.link.fragment.FragmentNameMapper
 import com.veepee.vpcore.route.link.interceptor.LinkInterceptor
-import com.veepee.vpcore.route.link.deeplink.DeepLink
-import com.veepee.vpcore.route.link.deeplink.DeepLinkMapper
 
-interface DeepLinkInterceptor : LinkInterceptor<DeepLinkMapper<out DeepLink>, DeepLink>
+interface FragmentLinkInterceptor :
+    LinkInterceptor<FragmentNameMapper<out FragmentName>, FragmentLink<FragmentName>>

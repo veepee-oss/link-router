@@ -22,6 +22,7 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 internal data class TestFragmentBParameter(val id: String) : ParcelableParameter
 
+
 internal class TestFragmentBLink(override val parameter: TestFragmentBParameter) :
     FragmentLink<TestFragmentName> {
     override val fragmentName: TestFragmentName = TestFragmentName.FragmentB

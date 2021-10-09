@@ -17,6 +17,7 @@ package com.veepee.vpcore.route.link.activity
 
 import android.content.Context
 import android.content.Intent
+import com.veepee.vpcore.route.link.interceptor.ChainFactory
 import com.veepee.vpcore.route.setLinkParameter
 
 interface ActivityLinkRouter {
@@ -25,7 +26,8 @@ interface ActivityLinkRouter {
 
 @Suppress("UNCHECKED_CAST")
 internal class ActivityLinkRouterImpl(
-    activityMappers: Set<ActivityNameMapper<out ActivityName>>
+    activityMappers: Set<ActivityNameMapper<out ActivityName>>,
+    private val chainFactory: ChainFactory<ActivityNameMapper<out ActivityName>, ActivityLink<ActivityName>>
 ) : ActivityLinkRouter {
 
     // Creates a map of ActivityNames and ActivityNameMappers.
@@ -39,19 +41,16 @@ internal class ActivityLinkRouterImpl(
     }
 
     override fun intentFor(context: Context, activityLink: ActivityLink<ActivityName>): Intent {
-        return mapToIntent(context, activityLink)
-    }
+        val chain = chainFactory.create()
 
-    private fun mapToIntent(
-        context: Context,
-        activityLink: ActivityLink<ActivityName>
-    ): Intent {
         val mapper =
-            activityLinkMappers[activityLink.activityName] ?: throw NoActivityNameMapperException(
-                activityLink
-            )
-        val activityClass = mapper.map(activityLink)
+            activityLinkMappers[activityLink.activityName] ?: throw NoActivityNameMapperException(activityLink)
 
+        val newActivityLink = chain.next(mapper, activityLink)
+        if (newActivityLink != activityLink) {
+            return intentFor(context, newActivityLink)
+        }
+        val activityClass = mapper.map(activityLink)
         return Intent(context, activityClass).setLinkParameter(activityLink.parameter)
     }
 }

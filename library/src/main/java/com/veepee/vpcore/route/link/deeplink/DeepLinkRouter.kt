@@ -17,7 +17,7 @@ package com.veepee.vpcore.route.link.deeplink
 
 import android.content.Context
 import com.veepee.vpcore.route.link.activity.ActivityLinkRouter
-import com.veepee.vpcore.route.link.deeplink.chain.ChainFactory
+import com.veepee.vpcore.route.link.interceptor.ChainFactory
 
 interface DeepLinkRouter {
     fun route(context: Context, deepLink: DeepLink)
@@ -27,7 +27,7 @@ internal class DeepLinkRouterImpl(
     initialDeepLinkMappers: Set<DeepLinkMapper<out DeepLink>>,
     private val activityRouter: ActivityLinkRouter,
     private val stackBuilderFactory: StackBuilderFactory,
-    private val chainFactory: ChainFactory
+    private val chainFactory: ChainFactory<DeepLinkMapper<out DeepLink>, DeepLink>
 ) : DeepLinkRouter {
 
     @Suppress("UNCHECKED_CAST")
@@ -35,17 +35,17 @@ internal class DeepLinkRouterImpl(
         initialDeepLinkMappers.map { it as DeepLinkMapper<DeepLink> }.toSet()
 
     override fun route(context: Context, deepLink: DeepLink) {
-        val chain = chainFactory.create()
-        val stackBuilder = stackBuilderFactory.create(context)
         val mapper = deepLinkMappers.firstOrNull { mapper -> mapper.canHandle(deepLink) }
             ?: throw NoDeepLinkMapperException(deepLink)
 
+        val chain = chainFactory.create()
         val newDeepLink = chain.next(mapper, deepLink)
         if (newDeepLink != deepLink) {
             route(context, newDeepLink)
             return
         }
 
+        val stackBuilder = stackBuilderFactory.create(context)
         mapper.stack(deepLink)
             .map { activityLink -> activityRouter.intentFor(context, activityLink) }
             .forEach { intent -> stackBuilder.addNextIntent(intent) }
