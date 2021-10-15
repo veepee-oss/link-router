@@ -17,8 +17,14 @@ package com.veepee.vpcore.route.fragment.route
 
 import com.veepee.vpcore.route.link.ParcelableParameter
 import com.veepee.vpcore.route.link.fragment.FragmentLink
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 internal object TestFragmentALink : FragmentLink<TestFragmentName> {
+    @IgnoredOnParcel
     override val fragmentName: TestFragmentName = TestFragmentName.FragmentA
+
+    @IgnoredOnParcel
     override val parameter: ParcelableParameter? = null
 }
