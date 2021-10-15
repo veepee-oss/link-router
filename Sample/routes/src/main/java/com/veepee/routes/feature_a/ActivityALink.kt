@@ -17,10 +17,14 @@ package com.veepee.routes.feature_a
 
 import com.veepee.vpcore.route.link.ParcelableParameter
 import com.veepee.vpcore.route.link.activity.ActivityLink
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
 object ActivityALink : ActivityLink<FeatureAActivityNames> {
+    @IgnoredOnParcel
     override val activityName: FeatureAActivityNames = FeatureAActivityNames.ActivityA
+
+    @IgnoredOnParcel
     override val parameter: ParcelableParameter? = null
 }

@@ -5,7 +5,7 @@
     <application>
         <activity
             android:name="com.veepee.feature.login.LoginActivity"
-            android:label="AActivity"
+            android:label="LoginActivity"
             android:theme="@style/Theme.Sample" />
     </application>
 
