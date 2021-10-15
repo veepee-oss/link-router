@@ -4,25 +4,24 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.veepee.feature.a.AActivity">
+    tools:context="com.veepee.feature.login.LoginActivity">
 
     <TextView
         android:id="@+id/text"
         style="@style/TextAppearance.AppCompat.Display3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Activity in Feature A Module"
+        android:text="Login Activity"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragmentContainer"
+    <Button
+        android:id="@+id/login_button"
+        android:text="Login here"
+        app:layout_constraintTop_toBottomOf="@+id/text"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/text" />
+        android:layout_height="wrap_content"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

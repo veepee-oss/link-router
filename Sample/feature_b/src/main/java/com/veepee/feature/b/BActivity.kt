@@ -16,18 +16,33 @@
 package com.veepee.feature.b
 
 import android.os.Bundle
+import android.view.View
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.veepee.routes.LoginStatus
 import com.veepee.routes.feature_a.FragmentALink
 import com.veepee.routes.router
 
-class BActivity : AppCompatActivity() {
+class BActivity : AppCompatActivity(R.layout.b_activity) {
+    
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.b_activity)
-
-        val fragment = router.fragmentFor(FragmentALink)
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.fragmentContainer, fragment)
-            .commit()
+        supportFragmentManager.setFragmentResultListener(
+            FragmentALink.REQUEST_KEY,
+            this
+        ) { key, _ ->
+            Toast.makeText(this, "Result From $key", Toast.LENGTH_LONG).show()
+        }
+        if (savedInstanceState == null) {
+            val fragment = router.fragmentFor(FragmentALink)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit()
+        }
+        findViewById<View>(R.id.logout_button)
+            .setOnClickListener {
+                LoginStatus.isLogged = false
+                finish()
+            }
     }
 }

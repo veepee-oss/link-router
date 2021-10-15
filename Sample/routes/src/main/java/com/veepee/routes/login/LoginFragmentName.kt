@@ -13,18 +13,8 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.routes.feature_a
+package com.veepee.routes.login
 
-import com.veepee.vpcore.route.link.ParcelableParameter
-import com.veepee.vpcore.route.link.activity.ActivityLink
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
+import com.veepee.vpcore.route.link.fragment.FragmentName
 
-@Parcelize
-object ActivityALink : ActivityLink<FeatureAActivityNames> {
-    @IgnoredOnParcel
-    override val activityName: FeatureAActivityNames = FeatureAActivityNames.ActivityA
-
-    @IgnoredOnParcel
-    override val parameter: ParcelableParameter? = null
-}
+object LoginFragmentName : FragmentName

@@ -13,29 +13,28 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.feature.b.routes
+package com.veepee.feature.login.routes
 
-import com.veepee.routes.AuthenticatedUriDeepLinkMapper
-import com.veepee.routes.Schemas
-import com.veepee.routes.feature_a.ActivityALink
-import com.veepee.routes.feature_b.ActivityBLink
-import com.veepee.routes.feature_b.ActivityBParameter
+import com.veepee.routes.AuthenticatedActivityLink
+import com.veepee.routes.LoginStatus
+import com.veepee.routes.login.LoginActivityLink
 import com.veepee.vpcore.route.link.activity.ActivityLink
 import com.veepee.vpcore.route.link.activity.ActivityName
-import com.veepee.vpcore.route.link.deeplink.Scheme
-import com.veepee.vpcore.route.link.deeplink.UriDeepLink
+import com.veepee.vpcore.route.link.activity.ActivityNameMapper
+import com.veepee.vpcore.route.link.activity.chain.ActivityLinkInterceptor
+import com.veepee.vpcore.route.link.interceptor.Chain
 
-// MyApp://featureB/someId
-object FeatureBDeepLinkMapper : AuthenticatedUriDeepLinkMapper {
-    override val supportedSchemes: Array<out Scheme> = Schemas.values()
-
-    override val supportedAuthority: String = "featureB"
-
-    override fun stack(deepLink: UriDeepLink): Array<ActivityLink<ActivityName>> {
-        val id = deepLink.pathSegments.last()
-        return arrayOf(
-            ActivityALink,
-            ActivityBLink(ActivityBParameter(id))
-        )
+object ActivityLinkAuthenticationInterceptor : ActivityLinkInterceptor {
+    override fun intercept(
+        chain: Chain<ActivityNameMapper<out ActivityName>, ActivityLink<ActivityName>>,
+        mapper: ActivityNameMapper<out ActivityName>,
+        link: ActivityLink<ActivityName>
+    ): ActivityLink<ActivityName> {
+        if (link is AuthenticatedActivityLink) {
+            if (!LoginStatus.isLogged) {
+                return LoginActivityLink(link)
+            }
+        }
+        return chain.next(mapper, link)
     }
 }

@@ -13,21 +13,38 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.feature.a
+package com.veepee.feature.login
 
 import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
-import com.veepee.routes.feature_a.FragmentALink
+import com.veepee.routes.LoginStatus
+import com.veepee.routes.login.LoginFragmentParameter
+import com.veepee.routes.login.LoginFragmentParameter.FragmentLinkParameter
+import com.veepee.routes.router
+import com.veepee.vpcore.route.requireLinkParameter
 
-class AFragment : Fragment(R.layout.a_fragment) {
+
+class LoginFragment : Fragment(R.layout.login_fragment) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        view.findViewById<View>(R.id.fragmentAButton)
+        view.findViewById<View>(R.id.login_button)
             .setOnClickListener {
-                parentFragmentManager.setFragmentResult(FragmentALink.REQUEST_KEY, Bundle())
+                when (val parameter = requireLinkParameter<LoginFragmentParameter>()) {
+                    is FragmentLinkParameter -> {
+                        LoginStatus.isLogged = true
+                        parentFragmentManager.beginTransaction()
+                            .replace(
+                                (view.parent as View).id,
+                                router.fragmentFor(parameter.fragmentLink),
+                                "asdas"
+                            )
+                            .commit()
+                    }
+                }
+
+
             }
     }
-
 }

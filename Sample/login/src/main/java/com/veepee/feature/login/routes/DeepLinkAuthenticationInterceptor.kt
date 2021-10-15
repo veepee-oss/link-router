@@ -13,21 +13,28 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.feature.a
+package com.veepee.feature.login.routes
 
-import android.os.Bundle
-import android.view.View
-import androidx.fragment.app.Fragment
-import com.veepee.routes.feature_a.FragmentALink
+import com.veepee.routes.AuthenticatedDeepLinkMapper
+import com.veepee.routes.LoginStatus
+import com.veepee.vpcore.route.link.deeplink.DeepLink
+import com.veepee.vpcore.route.link.deeplink.DeepLinkMapper
+import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
+import com.veepee.vpcore.route.link.interceptor.Chain
 
-class AFragment : Fragment(R.layout.a_fragment) {
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        view.findViewById<View>(R.id.fragmentAButton)
-            .setOnClickListener {
-                parentFragmentManager.setFragmentResult(FragmentALink.REQUEST_KEY, Bundle())
+object DeepLinkAuthenticationInterceptor : DeepLinkInterceptor {
+
+    override fun intercept(
+        chain: Chain<DeepLinkMapper<out DeepLink>, DeepLink>,
+        mapper: DeepLinkMapper<out DeepLink>,
+        link: DeepLink
+    ): DeepLink {
+        if (mapper is AuthenticatedDeepLinkMapper) {
+            if (!LoginStatus.isLogged) {
+                return LoginDeepLink(link)
             }
+        }
+        return chain.next(mapper, link)
     }
-
 }

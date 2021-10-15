@@ -21,7 +21,9 @@ import com.veepee.feature.a.routes.FeatureADeepLinkMapper
 import com.veepee.feature.a.routes.FeatureAFragmentNameMapper
 import com.veepee.feature.b.routes.FeatureBActivityNameMapper
 import com.veepee.feature.b.routes.FeatureBDeepLinkMapper
+import com.veepee.feature.login.routes.*
 import com.veepee.vpcore.route.GlobalRouterBuilder
+
 
 class SampleApplication : Application() {
     override fun onCreate() {
@@ -29,9 +31,18 @@ class SampleApplication : Application() {
         with(GlobalRouterBuilder) {
             add(FeatureAActivityNameMapper)
             add(FeatureBActivityNameMapper)
+            add(LoginActivityNameMapper)
+
             add(FeatureAFragmentNameMapper)
+            add(LoginFragmentNameMapper)
+
             add(FeatureBDeepLinkMapper)
             add(FeatureADeepLinkMapper)
+            add(LoginDeepLinkMapper)
+
+            add(DeepLinkAuthenticationInterceptor)
+            add(ActivityLinkAuthenticationInterceptor)
+            add(FragmentLinkAuthenticationInterceptor)
         }
     }
 }

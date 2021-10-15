@@ -13,18 +13,19 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.routes.feature_a
+package com.veepee.feature.login.routes
 
-import com.veepee.vpcore.route.link.ParcelableParameter
-import com.veepee.vpcore.route.link.activity.ActivityLink
-import kotlinx.parcelize.IgnoredOnParcel
-import kotlinx.parcelize.Parcelize
+import androidx.fragment.app.Fragment
+import com.veepee.feature.login.LoginFragment
+import com.veepee.routes.login.LoginFragmentName
+import com.veepee.vpcore.route.link.fragment.FragmentLink
+import com.veepee.vpcore.route.link.fragment.FragmentNameMapper
 
-@Parcelize
-object ActivityALink : ActivityLink<FeatureAActivityNames> {
-    @IgnoredOnParcel
-    override val activityName: FeatureAActivityNames = FeatureAActivityNames.ActivityA
+object LoginFragmentNameMapper : FragmentNameMapper<LoginFragmentName> {
 
-    @IgnoredOnParcel
-    override val parameter: ParcelableParameter? = null
+    override val supportedNames: Array<LoginFragmentName> = arrayOf(LoginFragmentName)
+
+    override fun map(fragmentLink: FragmentLink<LoginFragmentName>): Class<out Fragment> {
+        return LoginFragment::class.java
+    }
 }

@@ -15,10 +15,11 @@
  */
 package com.veepee.vpcore.route.link.activity
 
+import android.os.Parcelable
 import com.veepee.vpcore.route.link.Link
 import com.veepee.vpcore.route.link.ParcelableParameter
 
-interface ActivityLink<out T : ActivityName> : Link {
+interface ActivityLink<out T : ActivityName> : Link, Parcelable {
     val activityName: T
     override val parameter: ParcelableParameter?
 }
