@@ -40,4 +40,5 @@ dependencies {
     implementation libs.androidx.constraint.layout
     implementation libs.androidx.fragment
     implementation project(":routes")
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
 }

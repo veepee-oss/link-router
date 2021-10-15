@@ -15,13 +15,16 @@
  */
 package com.veepee.routes.feature_b
 
+import com.veepee.routes.AuthenticatedActivityLink
 import com.veepee.vpcore.route.link.ParcelableParameter
-import com.veepee.vpcore.route.link.activity.ActivityLink
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+@Parcelize
 class ActivityBLink(
     override val parameter: ActivityBParameter
-) : ActivityLink<FeatureBActivityNames> {
+) : AuthenticatedActivityLink<FeatureBActivityNames> {
+    @IgnoredOnParcel
     override val activityName: FeatureBActivityNames = FeatureBActivityNames.ActivityB
 }
 

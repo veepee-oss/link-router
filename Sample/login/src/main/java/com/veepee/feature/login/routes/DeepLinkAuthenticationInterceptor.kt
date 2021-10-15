@@ -8,7 +8,7 @@ import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.Chain
 
 
-object AuthenticationInterceptor : DeepLinkInterceptor {
+object DeepLinkAuthenticationInterceptor : DeepLinkInterceptor {
 
     override fun intercept(
         chain: Chain<DeepLinkMapper<out DeepLink>, DeepLink>,

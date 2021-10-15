@@ -15,19 +15,41 @@
  */
 package com.veepee.routes.login
 
+import com.veepee.routes.login.LoginActivityParameter.ActivityLinkParameter
+import com.veepee.routes.login.LoginActivityParameter.DeepLinkParameter
 import com.veepee.vpcore.route.link.ParcelableParameter
 import com.veepee.vpcore.route.link.activity.ActivityLink
+import com.veepee.vpcore.route.link.activity.ActivityName
 import com.veepee.vpcore.route.link.deeplink.DeepLink
+import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class LoginActivityLink(
     override val parameter: LoginActivityParameter
 ) : ActivityLink<LoginActivityName> {
-    constructor(deepLink: DeepLink) : this(LoginActivityParameter(deepLink))
+    constructor(
+        deepLink: DeepLink
+    ) : this(DeepLinkParameter(deepLink))
 
+    constructor(
+        activityLink: ActivityLink<ActivityName>
+    ) : this(ActivityLinkParameter(activityLink))
+
+    @IgnoredOnParcel
     override val activityName: LoginActivityName = LoginActivityName
-
 }
 
-@Parcelize
-data class LoginActivityParameter(val deepLink: DeepLink) : ParcelableParameter
+
+sealed class LoginActivityParameter : ParcelableParameter {
+    @Parcelize
+    data class DeepLinkParameter(
+        val deepLink: DeepLink
+    ) : LoginActivityParameter()
+
+    @Parcelize
+    data class ActivityLinkParameter(
+        val activityLink: ActivityLink<ActivityName>
+    ) : LoginActivityParameter()
+
+}

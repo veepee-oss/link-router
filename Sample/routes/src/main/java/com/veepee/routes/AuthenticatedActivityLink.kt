@@ -13,14 +13,9 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.routes.feature_a
+package com.veepee.routes
 
-import com.veepee.vpcore.route.link.ParcelableParameter
 import com.veepee.vpcore.route.link.activity.ActivityLink
-import kotlinx.parcelize.Parcelize
+import com.veepee.vpcore.route.link.activity.ActivityName
 
-@Parcelize
-object ActivityALink : ActivityLink<FeatureAActivityNames> {
-    override val activityName: FeatureAActivityNames = FeatureAActivityNames.ActivityA
-    override val parameter: ParcelableParameter? = null
-}
+interface AuthenticatedActivityLink<T : ActivityName> : ActivityLink<T>

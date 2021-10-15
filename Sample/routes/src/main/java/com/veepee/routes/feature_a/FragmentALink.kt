@@ -15,10 +15,13 @@
  */
 package com.veepee.routes.feature_a
 
+import com.veepee.routes.AuthenticatedFragmentLink
 import com.veepee.vpcore.route.link.ParcelableParameter
-import com.veepee.vpcore.route.link.fragment.FragmentLink
+import kotlinx.parcelize.Parcelize
 
-object FragmentALink : FragmentLink<FeatureAFragmentNames> {
+@Parcelize
+object FragmentALink : AuthenticatedFragmentLink<FeatureAFragmentNames> {
+    const val REQUEST_KEY = "FragmentALink"
     override val fragmentName: FeatureAFragmentNames = FeatureAFragmentNames.FragmentA
     override val parameter: ParcelableParameter? = null
 }

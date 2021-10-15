@@ -16,11 +16,26 @@
 package com.veepee.feature.a
 
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.veepee.routes.feature_a.FragmentALink
+import com.veepee.routes.router
 
-class AActivity : AppCompatActivity() {
+class AActivity : AppCompatActivity(R.layout.a_activity) {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.a_activity)
+        supportFragmentManager.setFragmentResultListener(
+            FragmentALink.REQUEST_KEY,
+            this
+        ) { key, _ ->
+            Toast.makeText(this, "Result From $key", Toast.LENGTH_LONG).show()
+        }
+        if (savedInstanceState == null) {
+            val fragment = router.fragmentFor(FragmentALink)
+            supportFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, fragment)
+                .commit()
+        }
     }
 }
