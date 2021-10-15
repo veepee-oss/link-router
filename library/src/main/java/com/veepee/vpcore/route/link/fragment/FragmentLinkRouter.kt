@@ -17,6 +17,7 @@ package com.veepee.vpcore.route.link.fragment
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
+import com.veepee.vpcore.route.link.interceptor.ChainFactory
 import com.veepee.vpcore.route.setLinkParameter
 
 interface FragmentLinkRouter {
@@ -25,7 +26,8 @@ interface FragmentLinkRouter {
 
 @Suppress("UNCHECKED_CAST")
 internal class FragmentLinkRouterImpl(
-    fragmentMappers: Set<FragmentNameMapper<out FragmentName>>
+    fragmentMappers: Set<FragmentNameMapper<out FragmentName>>,
+    private val chainFactory: ChainFactory<FragmentNameMapper<out FragmentName>, FragmentLink<FragmentName>>
 ) : FragmentLinkRouter {
 
     private val fragmentLinkMapper =
@@ -36,10 +38,14 @@ internal class FragmentLinkRouterImpl(
         }.toMap()
 
     override fun fragmentFor(fragmentLink: FragmentLink<FragmentName>): Fragment {
-        val fragment =
-            fragmentLinkMapper[fragmentLink.fragmentName]?.map(fragmentLink)?.newInstance()
-                ?: throw NoFragmentNameMapperException(fragmentLink)
-
+        val chain = chainFactory.create()
+        val mapper =
+            fragmentLinkMapper[fragmentLink.fragmentName] ?: throw NoFragmentNameMapperException(fragmentLink)
+        val newFragmentLink = chain.next(mapper, fragmentLink)
+        if (newFragmentLink != fragmentLink) {
+            return fragmentFor(newFragmentLink)
+        }
+        val fragment = mapper.map(fragmentLink).newInstance()
         return fragment.apply {
             arguments = Bundle().setLinkParameter(fragmentLink.parameter)
         }

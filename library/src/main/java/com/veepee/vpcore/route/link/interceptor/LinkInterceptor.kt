@@ -13,10 +13,22 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.vpcore.route.link.deeplink.chain
+package com.veepee.vpcore.route.link.interceptor
 
-import com.veepee.vpcore.route.link.interceptor.LinkInterceptor
-import com.veepee.vpcore.route.link.deeplink.DeepLink
-import com.veepee.vpcore.route.link.deeplink.DeepLinkMapper
+interface LinkInterceptor<Mapper, Link> {
+    fun intercept(
+        chain: Chain<Mapper, Link>,
+        mapper: Mapper,
+        link: Link
+    ): Link
+}
 
-interface DeepLinkInterceptor : LinkInterceptor<DeepLinkMapper<out DeepLink>, DeepLink>
+internal class DefaultInterceptor<Mapper, Link> : LinkInterceptor<Mapper, Link> {
+    override fun intercept(
+        chain: Chain<Mapper, Link>,
+        mapper: Mapper,
+        link: Link
+    ): Link {
+        return link
+    }
+}
