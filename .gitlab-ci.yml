@@ -1,0 +1,73 @@
+variables:
+  ANDROID_IMAGE: "docker.registry.vptech.eu/alvrme/alpine-android:android-30-jdk11-v2021.08.01"
+  DEFAULT_BRANCH: "develop"
+  MAIN_BRANCH: "master"
+
+stages:
+  - build
+  - automation
+  - release
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+cache:
+  key: ${CI_PROJECT_ID}
+  paths:
+    - .gradle/*
+
+build:
+  stage: build
+  image: $ANDROID_IMAGE
+  script:
+    - ./gradlew assemble
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    - if: $CI_COMMIT_BRANCH == $DEFAULT_BRANCH
+      when: always
+    - when: never
+  tags:
+    - docker
+
+.automation:
+  stage: automation
+  image: $ANDROID_IMAGE
+  before_script:
+    - echo "$TOOLS_PROPERTIES" > tools.properties
+    - echo "$TOOLS_SLACK_PROPERTIES" > slack.properties
+    - echo "$TOOLS_CONFLUENCE_PROPERTIES" > confluence.properties
+    - wget -O tools.jar https://registry.vptech.eu/artifactory/offer-discovery-android-maven/com/veepee/tools/[RELEASE]/tools-[RELEASE].jar
+  tags:
+    - docker
+
+assign MR:
+  extends: .automation
+  script:
+    - java -jar tools.jar assignMR -mr="$CI_MERGE_REQUEST_IID"
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: manual
+    - when: never
+  allow_failure: true
+
+release minor:
+  extends: .automation
+  script:
+    - java -jar tools.jar makeReleaseBranch
+    - java -jar tools.jar buildRelease
+    - java -jar tools.jar postReleaseMerges
+  rules:
+    - if: $CI_COMMIT_BRANCH == $DEFAULT_BRANCH
+      when: manual
+    - when: never
+
+release patch:
+  extends: .automation
+  script:
+    - java -jar tools.jar makeHotfixBranch
+    - java -jar tools.jar buildRelease
+    - java -jar tools.jar postReleaseMerges
+  rules:
+    - if: $CI_COMMIT_BRANCH == $DEFAULT_BRANCH
+      when: manual
+    - when: never
