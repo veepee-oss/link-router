@@ -1,7 +1,6 @@
 variables:
   ANDROID_IMAGE: "docker.registry.vptech.eu/alvrme/alpine-android:android-30-jdk11-v2021.08.01"
-  DEFAULT_BRANCH: "develop"
-  MAIN_BRANCH: "master"
+  DEFAULT_BRANCH: "main"
 
 stages:
   - build
