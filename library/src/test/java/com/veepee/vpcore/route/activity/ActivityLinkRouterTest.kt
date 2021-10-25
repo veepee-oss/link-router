@@ -23,6 +23,8 @@ import com.veepee.vpcore.route.activity.route.TestActivityALink
 import com.veepee.vpcore.route.activity.route.TestActivityBLink
 import com.veepee.vpcore.route.activity.route.TestActivityBParameter
 import com.veepee.vpcore.route.link.activity.*
+import com.veepee.vpcore.route.link.activity.chain.ActivityLinkInterceptor
+import com.veepee.vpcore.route.link.interceptor.Chain
 import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 import com.veepee.vpcore.route.requireLinkParameter
 import org.junit.Assert.assertEquals
@@ -63,6 +65,26 @@ class ActivityLinkRouterTest {
         assertThrows(NoActivityNameMapperException::class.java) {
             router.intentFor(activity, TestActivityALink)
         }
+    }
+
+    @Test
+    fun `should intercept ActivityLink and return a different one`() {
+        val interceptor = object : ActivityLinkInterceptor {
+            override fun intercept(
+                chain: Chain<ActivityNameMapper<out ActivityName>, ActivityLink<ActivityName>>,
+                mapper: ActivityNameMapper<out ActivityName>,
+                link: ActivityLink<ActivityName>
+            ): ActivityLink<ActivityName> {
+                if (link is TestActivityALink) {
+                    return TestActivityBLink(activityBParameter)
+                }
+                return chain.next(mapper, link)
+            }
+        }
+        val router = ActivityLinkRouterImpl(mappers, ChainFactoryImpl(listOf(interceptor)))
+        val activity: Activity = mock()
+        val intent1 = router.intentFor(activity, TestActivityALink)
+        assertEquals(intent1.component!!.className, TestActivityB::class.java.name)
     }
 
     private fun assertIntentFor(

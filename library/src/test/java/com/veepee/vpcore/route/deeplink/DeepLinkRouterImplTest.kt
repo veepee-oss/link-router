@@ -17,22 +17,37 @@ package com.veepee.vpcore.route.deeplink
 
 import android.content.Context
 import android.content.Intent
+import android.net.Uri
 import com.veepee.vpcore.route.activity.route.TestActivityALink
 import com.veepee.vpcore.route.activity.route.TestActivityBLink
 import com.veepee.vpcore.route.activity.route.TestActivityBParameter
-import com.veepee.vpcore.route.deeplink.route.TestUriDeepLinkMapper
+import com.veepee.vpcore.route.deeplink.route.BingUriDeepLinkMapper
+import com.veepee.vpcore.route.deeplink.route.GoogleUriDeepLinkMapper
 import com.veepee.vpcore.route.link.activity.ActivityLinkRouter
-import com.veepee.vpcore.route.link.deeplink.*
+import com.veepee.vpcore.route.link.deeplink.DeepLink
+import com.veepee.vpcore.route.link.deeplink.DeepLinkMapper
+import com.veepee.vpcore.route.link.deeplink.DeepLinkRouterImpl
+import com.veepee.vpcore.route.link.deeplink.NoDeepLinkMapperException
+import com.veepee.vpcore.route.link.deeplink.StackBuilder
+import com.veepee.vpcore.route.link.deeplink.StackBuilderFactory
+import com.veepee.vpcore.route.link.deeplink.UriDeepLink
+import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.Chain
 import com.veepee.vpcore.route.link.interceptor.ChainFactory
+import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.inOrder
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import org.robolectric.RobolectricTestRunner
 
+@RunWith(RobolectricTestRunner::class)
 class DeepLinkRouterImplTest {
     private val chainFactory: ChainFactory<DeepLinkMapper<out DeepLink>, DeepLink> = mock()
     private val chain: Chain<DeepLinkMapper<out DeepLink>, DeepLink> = mock()
@@ -44,7 +59,8 @@ class DeepLinkRouterImplTest {
     private val intentB: Intent = mock()
     private val deepLink: DeepLink = mock()
 
-    private val mappers: Set<DeepLinkMapper<DeepLink>> = setOf(TestUriDeepLinkMapper)
+    private val mappers: Set<DeepLinkMapper<DeepLink>> =
+        setOf(GoogleUriDeepLinkMapper, BingUriDeepLinkMapper)
 
     @Before
     fun setup() {
@@ -95,5 +111,38 @@ class DeepLinkRouterImplTest {
         assertThrows(NoDeepLinkMapperException::class.java) {
             router.route(context, deepLink)
         }
+    }
+
+    @Test
+    fun `should intercept bing deeplink and forward to google deeplink`() {
+        val interceptor = object : DeepLinkInterceptor {
+            override fun intercept(
+                chain: Chain<DeepLinkMapper<out DeepLink>, DeepLink>,
+                mapper: DeepLinkMapper<out DeepLink>,
+                link: DeepLink
+            ): DeepLink {
+                if (link.authority == "www.bing.com") {
+                    return UriDeepLink(Uri.parse("myscheme://www.google.com"))
+                    { TestScheme.MyScheme }
+                }
+                return chain.next(mapper, link)
+            }
+        }
+        val chainFactory = ChainFactoryImpl(listOf(interceptor))
+
+        val router = DeepLinkRouterImpl(
+            mappers,
+            activityLinkRouter,
+            stackBuilderFactory,
+            chainFactory
+        )
+
+        router.route(context, UriDeepLink(Uri.parse("myscheme://www.bing.com"))
+        { TestScheme.MyScheme })
+
+        verify(stackBuilderFactory, times(1)).create(context)
+        verify(stackBuilder, times(1)).addNextIntent(intentA)
+        verify(stackBuilder, times(1)).addNextIntent(intentB)
+        verify(stackBuilder, times(1)).startActivities()
     }
 }

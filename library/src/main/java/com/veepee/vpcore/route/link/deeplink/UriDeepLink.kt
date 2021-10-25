@@ -25,6 +25,16 @@ data class UriDeepLink(
     override val parameter: UriParameter,
     private val schemeFactory: (scheme: String) -> Scheme
 ) : DeepLink {
+    constructor(
+        uri: Uri,
+        schemeFactory: (scheme: String) -> Scheme
+    ) : this(UriParameter(uri), schemeFactory)
+
+    constructor(
+        url: String,
+        schemeFactory: (scheme: String) -> Scheme
+    ) : this(Uri.parse(url), schemeFactory)
+
     @IgnoredOnParcel
     override val scheme: Scheme = schemeFactory(parameter.uri.scheme!!)
 
