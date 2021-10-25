@@ -21,10 +21,13 @@ import com.veepee.vpcore.route.fragment.feature.TestFragmentNameMapper
 import com.veepee.vpcore.route.fragment.route.TestFragmentALink
 import com.veepee.vpcore.route.fragment.route.TestFragmentBLink
 import com.veepee.vpcore.route.fragment.route.TestFragmentBParameter
+import com.veepee.vpcore.route.link.fragment.FragmentLink
 import com.veepee.vpcore.route.link.fragment.FragmentLinkRouterImpl
 import com.veepee.vpcore.route.link.fragment.FragmentName
 import com.veepee.vpcore.route.link.fragment.FragmentNameMapper
 import com.veepee.vpcore.route.link.fragment.NoFragmentNameMapperException
+import com.veepee.vpcore.route.link.fragment.chain.FragmentLinkInterceptor
+import com.veepee.vpcore.route.link.interceptor.Chain
 import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 import com.veepee.vpcore.route.requireLinkParameter
 import org.junit.Assert
@@ -61,11 +64,33 @@ class FragmentLinkRouterTest {
 
     @Test
     fun `should raise an error when the there is no mapper for a given ActivityLink`() {
-
         val router = FragmentLinkRouterImpl(emptySet(), ChainFactoryImpl(emptyList()))
 
         Assert.assertThrows(NoFragmentNameMapperException::class.java) {
             router.fragmentFor(TestFragmentALink)
         }
+    }
+
+    @Test
+    fun `should intercept fragmentA and return fragmentB`() {
+        val interceptor = object : FragmentLinkInterceptor {
+            override fun intercept(
+                chain: Chain<FragmentNameMapper<out FragmentName>, FragmentLink<FragmentName>>,
+                mapper: FragmentNameMapper<out FragmentName>,
+                link: FragmentLink<FragmentName>
+            ): FragmentLink<FragmentName> {
+                if (link is TestFragmentALink) {
+                    return TestFragmentBLink(testFragmentBParameter)
+                }
+                return chain.next(mapper, link)
+            }
+        }
+        val router = FragmentLinkRouterImpl(mappers, ChainFactoryImpl(listOf(interceptor)))
+
+        val fragment = router.fragmentFor(TestFragmentALink)
+        assertEquals(
+            fragment.requireLinkParameter<TestFragmentBParameter>(),
+            testFragmentBParameter
+        )
     }
 }
