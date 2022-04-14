@@ -49,6 +49,13 @@ assign MR:
     - when: never
   allow_failure: true
 
+check approvals:
+  extends: .automation
+  script:
+    - java -jar tools.jar checkApprovals
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule" && $SCHEDULE_TYPE == "checkApprovals"'
+
 release minor:
   extends: .automation
   script:
