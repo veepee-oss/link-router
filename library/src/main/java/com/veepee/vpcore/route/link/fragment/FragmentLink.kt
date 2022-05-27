@@ -23,3 +23,5 @@ interface FragmentLink<out T : FragmentName> : Link, Parcelable {
     val fragmentName: T
     override val parameter: ParcelableParameter?
 }
+
+interface DialogFragmentLink<out T : DialogFragmentName> : FragmentLink<T>

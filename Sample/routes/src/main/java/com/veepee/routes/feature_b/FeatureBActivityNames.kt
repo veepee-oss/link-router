@@ -16,7 +16,12 @@
 package com.veepee.routes.feature_b
 
 import com.veepee.vpcore.route.link.activity.ActivityName
+import com.veepee.vpcore.route.link.fragment.DialogFragmentName
 
 enum class FeatureBActivityNames : ActivityName {
     ActivityB
+}
+
+enum class FeatureBDialogFragmentNames : DialogFragmentName {
+    DialogFragmentFeatureB
 }
