@@ -37,7 +37,6 @@ dependencies {
 
     implementation libs.androidx.core
     implementation libs.androidx.fragment
-    implementation libs.material.components
 
     testImplementation libs.test.junit
     testImplementation libs.test.robolectric

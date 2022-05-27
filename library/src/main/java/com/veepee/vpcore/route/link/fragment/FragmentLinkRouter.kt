@@ -16,12 +16,14 @@
 package com.veepee.vpcore.route.link.fragment
 
 import android.os.Bundle
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import com.veepee.vpcore.route.link.interceptor.ChainFactory
 import com.veepee.vpcore.route.setLinkParameter
 
 interface FragmentLinkRouter {
     fun fragmentFor(fragmentLink: FragmentLink<FragmentName>): Fragment
+    fun dialogFragmentFor(fragmentLink: DialogFragmentLink<DialogFragmentName>): DialogFragment
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -40,7 +42,9 @@ internal class FragmentLinkRouterImpl(
     override fun fragmentFor(fragmentLink: FragmentLink<FragmentName>): Fragment {
         val chain = chainFactory.create()
         val mapper =
-            fragmentLinkMapper[fragmentLink.fragmentName] ?: throw NoFragmentNameMapperException(fragmentLink)
+            fragmentLinkMapper[fragmentLink.fragmentName] ?: throw NoFragmentNameMapperException(
+                fragmentLink
+            )
         val newFragmentLink = chain.next(mapper, fragmentLink)
         if (newFragmentLink != fragmentLink) {
             return fragmentFor(newFragmentLink)
@@ -49,5 +53,9 @@ internal class FragmentLinkRouterImpl(
         return fragment.apply {
             arguments = Bundle().setLinkParameter(fragmentLink.parameter)
         }
+    }
+
+    override fun dialogFragmentFor(fragmentLink: DialogFragmentLink<DialogFragmentName>): DialogFragment {
+        return fragmentFor(fragmentLink) as DialogFragment
     }
 }

@@ -13,26 +13,21 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.feature.a
+package com.veepee.feature.b.routes
 
-import android.os.Bundle
-import android.view.View
 import androidx.fragment.app.Fragment
-import com.veepee.routes.feature_a.FragmentALink
-import com.veepee.routes.feature_b.DialogFragmentBLink
-import com.veepee.routes.router
+import com.veepee.feature.b.FeatureBDialogFragment
+import com.veepee.routes.feature_b.FeatureBDialogFragmentNames
+import com.veepee.vpcore.route.link.fragment.FragmentLink
+import com.veepee.vpcore.route.link.fragment.FragmentNameMapper
 
-class AFragment : Fragment(R.layout.a_fragment) {
+object FeatureBDialogFragmentNameMapper : FragmentNameMapper<FeatureBDialogFragmentNames> {
+    override val supportedNames: Array<FeatureBDialogFragmentNames> =
+        arrayOf(FeatureBDialogFragmentNames.DialogFragmentFeatureB)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        view.findViewById<View>(R.id.fragmentAButton)
-            .setOnClickListener {
-                parentFragmentManager.setFragmentResult(FragmentALink.REQUEST_KEY, Bundle())
-            }
-        view.findViewById<View>(R.id.dialogFragmentBButton).setOnClickListener {
-            router.dialogFragmentFor(DialogFragmentBLink).show(childFragmentManager, "tag")
-
+    override fun map(fragmentLink: FragmentLink<FeatureBDialogFragmentNames>): Class<out Fragment> {
+        return when (fragmentLink.fragmentName) {
+            FeatureBDialogFragmentNames.DialogFragmentFeatureB -> FeatureBDialogFragment::class.java
         }
     }
 }
