@@ -35,7 +35,7 @@ build:
     - echo "$TOOLS_PROPERTIES" > tools.properties
     - echo "$TOOLS_SLACK_PROPERTIES" > slack.properties
     - echo "$TOOLS_CONFLUENCE_PROPERTIES" > confluence.properties
-    - wget -O $URL_TOOLS_JAR
+    - wget -O tools.jar $URL_TOOLS_JAR
   tags:
     - docker
 
