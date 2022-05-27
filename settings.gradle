@@ -7,14 +7,16 @@ include ':library'
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            alias('lang.kotlin').to('org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.5.31')
-            alias('androidx.core').to('androidx.core:core:1.6.0')
-            alias('androidx.fragment').to('androidx.fragment:fragment:1.3.5')
-            alias('test.junit').to('junit:junit:4.13.1')
-            alias('test.androidx.test.core').to('androidx.test:core-ktx:1.4.0')
-            alias('test.robolectric').to('org.robolectric:robolectric:4.6.1')
-            alias('test.mockito.inline').to('org.mockito:mockito-inline:3.11.2')
-            alias('test.mockito.kotlin').to('org.mockito.kotlin:mockito-kotlin:3.2.0')
+            def kotlinVersion = version('koltin', "1.6.21")
+            library('lang.kotlin', 'org.jetbrains.kotlin', 'kotlin-stdlib').versionRef(kotlinVersion)
+            library('androidx.core', 'androidx.core', 'core').versionRef(version('core', '1.5.0'))
+            library('androidx.fragment', 'androidx.fragment', 'fragment').versionRef(version('fragment', "1.3.5"))
+            library('material.components', 'com.google.android.material', 'material').versionRef(version('material', '1.6.0'))
+            library('test.junit', 'junit', 'junit').versionRef(version('junit', '4.13.1'))
+            library('test.androidx.test.core', 'androidx.test', 'core-ktx').versionRef(version('core-test', '1.4.0'))
+            library('test.robolectric', 'org.robolectric', 'robolectric').versionRef(version('robolectric', '4.6.1'))
+            library('test.mockito.inline', 'org.mockito', 'mockito-inline').versionRef(version('mockito-inline', '3.11.2'))
+            library('test.mockito.kotlin', 'org.mockito.kotlin', 'mockito-kotlin').versionRef(version('mockito-kotlin', '3.2.0'))
 
         }
     }

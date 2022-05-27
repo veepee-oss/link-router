@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
     buildToolsVersion "30.0.3"
 
     defaultConfig {
@@ -37,6 +37,7 @@ dependencies {
 
     implementation libs.androidx.core
     implementation libs.androidx.fragment
+    implementation libs.material.components
 
     testImplementation libs.test.junit
     testImplementation libs.test.robolectric
