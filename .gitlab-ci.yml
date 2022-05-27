@@ -1,5 +1,5 @@
 variables:
-  ANDROID_IMAGE: "docker.registry.vptech.eu/alvrme/alpine-android:android-30-jdk11-v2021.08.01"
+  ANDROID_IMAGE: $DOCKER_IMAGE
   DEFAULT_BRANCH: "main"
 
 stages:
@@ -35,7 +35,7 @@ build:
     - echo "$TOOLS_PROPERTIES" > tools.properties
     - echo "$TOOLS_SLACK_PROPERTIES" > slack.properties
     - echo "$TOOLS_CONFLUENCE_PROPERTIES" > confluence.properties
-    - wget -O tools.jar https://registry.vptech.eu/artifactory/offer-discovery-android-maven/com/veepee/tools/[RELEASE]/tools-[RELEASE].jar
+    - wget -O $URL_TOOLS_JAR
   tags:
     - docker
 
