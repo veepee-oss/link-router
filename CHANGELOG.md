@@ -1,6 +1,18 @@
 Change Log
 ==========
 
+Release 0.2.0
+--------------
+
+### CORE
+ * [Add support to DialogFragments routing](https://git.vptech.eu/veepee/offerdiscovery/products/front-mobile/android/link-router/-/merge_requests/10)
+ * [update gilab config](https://git.vptech.eu/veepee/offerdiscovery/products/front-mobile/android/link-router/-/merge_requests/11)
+ * [upgrade gradle configs](https://git.vptech.eu/veepee/offerdiscovery/products/front-mobile/android/link-router/-/merge_requests/9)
+
+### feature
+ * [Add checkApprovals to multiple projects (link-router)](https://jira.vptech.eu/browse/FCAN-1185)
+
+
 Release 0.1.0
 --------------
 
