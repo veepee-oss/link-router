@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     buildToolsVersion "30.0.3"
 
     defaultConfig {
@@ -28,6 +28,13 @@ android {
     kotlinOptions {
         jvmTarget = '1.8'
     }
+    buildFeatures {
+        compose true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion '1.2.0-beta03'
+    }
 }
 
 dependencies {
@@ -39,4 +46,5 @@ dependencies {
     implementation libs.androidx.constraint.layout
     implementation libs.androidx.fragment
     implementation project(":routes")
+    implementation libs.androidx.compose.foundation
 }

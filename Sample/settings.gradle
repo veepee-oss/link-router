@@ -20,9 +20,9 @@ dependencyResolutionManagement {
         libs {
             def kotlinVersion = version('koltin', "1.6.21")
             library('lang.kotlin', 'org.jetbrains.kotlin', 'kotlin-stdlib').versionRef(kotlinVersion)
-            library('androidx.core', 'androidx.core', 'core').versionRef(version('core', '1.5.0'))
-            library('androidx.appcompat', 'androidx.appcompat', 'appcompat').versionRef(version('appcompat', '1.3.0'))
-            library('androidx.fragment', 'androidx.fragment', 'fragment').versionRef(version('fragment', '1.3.5'))
+            library('androidx.core', 'androidx.core', 'core').versionRef(version('core', '1.8.0'))
+            library('androidx.appcompat', 'androidx.appcompat', 'appcompat').versionRef(version('appcompat', '1.4.2'))
+            library('androidx.fragment', 'androidx.fragment', 'fragment').versionRef(version('fragment', '1.4.1'))
             library('androidx.constraint.layout', 'androidx.constraintlayout', 'constraintlayout').versionRef(version('constanstlayout', '2.0.4'))
             library('material', 'com.google.android.material', 'material').versionRef(version('material', '1.6.0'))
             library('test.junit', 'junit', 'junit').versionRef(version('junit', '4.13.1'))
@@ -30,6 +30,8 @@ dependencyResolutionManagement {
             library('test.robolectric', 'org.robolectric', 'robolectric').versionRef(version('robolectric', '4.6.1'))
             library('test.mockito.inline', 'org.mockito', 'mockito-inline').versionRef(version('mockito-inline', '3.11.2'))
             library('test.mockito.kotlin', 'org.mockito.kotlin', 'mockito-kotlin').versionRef(version('mockito-kotlin', '3.2.0'))
+            def composeVersion = version('compose', '1.2.0-beta03')
+            library('androidx.compose.foundation', 'androidx.compose.foundation', 'foundation').versionRef(composeVersion)
         }
     }
 }

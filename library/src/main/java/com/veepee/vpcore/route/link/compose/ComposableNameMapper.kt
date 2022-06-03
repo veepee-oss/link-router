@@ -13,8 +13,14 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.routes
-// This should be some repository and be in another shared module.
-object LoginStatus {
-    var isLogged = false
+package com.veepee.vpcore.route.link.compose
+
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+
+interface ComposableNameMapper<T : ComposableName> {
+    val supportedNames: Array<T>
+
+    @Composable
+    fun Map(composableLink: ComposableLink<T>, modifier: Modifier)
 }
