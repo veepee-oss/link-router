@@ -17,14 +17,54 @@ package com.veepee.vpcore.route.link.compose
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.veepee.vpcore.route.link.compose.chain.ComposableLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.ChainFactory
+import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 
 interface ComposableLinkRouter {
+
     @Composable
     fun ComposeFor(composableLink: ComposableLink<ComposableName>, modifier: Modifier)
 
     @Composable
     fun ComposeFor(composableLink: ComposableLink<ComposableName>)
+
+    interface Builder {
+        fun add(composableLinkInterceptor: ComposableLinkInterceptor): Builder
+        fun add(composableNameMapper: ComposableNameMapper<out ComposableName>): Builder
+        fun newBuilder(): Builder
+        fun build(): ComposableLinkRouter
+    }
+}
+
+class ComposeLinkRouterBuilder(
+    private val composableNameMappersRegistry: MutableSet<ComposableNameMapper<out ComposableName>> = mutableSetOf(),
+    private val composableLinkInterceptorsRegistry: MutableList<ComposableLinkInterceptor> = mutableListOf()
+) : ComposableLinkRouter.Builder {
+
+    override fun add(composableLinkInterceptor: ComposableLinkInterceptor): ComposableLinkRouter.Builder {
+        composableLinkInterceptorsRegistry.add(composableLinkInterceptor)
+        return this
+    }
+
+    override fun add(composableNameMapper: ComposableNameMapper<out ComposableName>): ComposableLinkRouter.Builder {
+        composableNameMappersRegistry.add(composableNameMapper)
+        return this
+    }
+
+    override fun newBuilder(): ComposableLinkRouter.Builder {
+        return ComposeLinkRouterBuilder(
+            composableNameMappersRegistry.toMutableSet(),
+            composableLinkInterceptorsRegistry.toMutableList()
+        )
+    }
+
+    override fun build(): ComposableLinkRouter {
+        return ComposableLinkRouterImpl(
+            composableNameMappersRegistry.toSet(),
+            ChainFactoryImpl(composableLinkInterceptorsRegistry.toList())
+        )
+    }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -39,7 +79,6 @@ internal class ComposableLinkRouterImpl(
                 composableName to mapper as ComposableNameMapper<ComposableName>
             }
         }.toMap()
-
 
     @Composable
     override fun ComposeFor(composableLink: ComposableLink<ComposableName>) {

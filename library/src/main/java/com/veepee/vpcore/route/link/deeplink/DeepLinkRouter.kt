@@ -17,10 +17,51 @@ package com.veepee.vpcore.route.link.deeplink
 
 import android.content.Context
 import com.veepee.vpcore.route.link.activity.ActivityLinkRouter
+import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.ChainFactory
+import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 
 interface DeepLinkRouter {
     fun route(context: Context, deepLink: DeepLink)
+
+    interface Builder {
+        fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): Builder
+        fun add(deepLinkInterceptor: DeepLinkInterceptor): Builder
+        fun newBuilder(): Builder
+        fun build(activityLinkRouter: ActivityLinkRouter): DeepLinkRouter
+    }
+}
+
+class DeepLinkRouterBuilder(
+    private val deepLinkMappersRegistry: MutableSet<DeepLinkMapper<out DeepLink>> = mutableSetOf(),
+    private val deepLinkInterceptorsRegistry: MutableList<DeepLinkInterceptor> = mutableListOf()
+) : DeepLinkRouter.Builder {
+
+    override fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): DeepLinkRouter.Builder {
+        deepLinkMappersRegistry.add(deepLinkMapper)
+        return this
+    }
+
+    override fun add(deepLinkInterceptor: DeepLinkInterceptor): DeepLinkRouter.Builder {
+        deepLinkInterceptorsRegistry.add(deepLinkInterceptor)
+        return this
+    }
+
+    override fun newBuilder(): DeepLinkRouter.Builder {
+        return DeepLinkRouterBuilder(
+            deepLinkMappersRegistry.toMutableSet(),
+            deepLinkInterceptorsRegistry.toMutableList()
+        )
+    }
+
+    override fun build(activityLinkRouter: ActivityLinkRouter): DeepLinkRouter {
+        return DeepLinkRouterImpl(
+            deepLinkMappersRegistry.toSet(),
+            activityLinkRouter,
+            StackBuilderFactoryImpl(),
+            ChainFactoryImpl(deepLinkInterceptorsRegistry.toList())
+        )
+    }
 }
 
 internal class DeepLinkRouterImpl(

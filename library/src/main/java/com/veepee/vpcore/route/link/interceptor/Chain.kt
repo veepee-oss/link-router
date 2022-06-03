@@ -34,8 +34,9 @@ internal class ChainFactoryImpl<Mapper, Link>(
     }
 }
 
-internal class ChainImpl<Mapper, Link>(private val interceptors: List<LinkInterceptor<Mapper, Link>>) :
-    Chain<Mapper, Link> {
+internal class ChainImpl<Mapper, Link>(
+    private val interceptors: List<LinkInterceptor<Mapper, Link>>
+) : Chain<Mapper, Link> {
 
     private var currentIndex = -1
 
