@@ -1,10 +1,11 @@
 variables:
-  ANDROID_IMAGE: $DOCKER_IMAGE
+  ANDROID_IMAGE: $ANDROID_DOCKER_IMAGE_URL
   DEFAULT_BRANCH: "main"
 
 stages:
-  - build
   - automation
+  - build
+  - test
   - release
 
 before_script:
@@ -13,6 +14,21 @@ cache:
   key: ${CI_PROJECT_ID}
   paths:
     - .gradle/*
+
+test:
+  stage: test
+  image: $ANDROID_IMAGE
+  script:
+    - ./gradlew testDebugUnitTest
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+      when: always
+    - if: $CI_COMMIT_BRANCH == $DEFAULT_BRANCH
+      when: always
+    - when: never
+  tags:
+    - docker
+
 
 build:
   stage: build
@@ -35,7 +51,7 @@ build:
     - echo "$TOOLS_PROPERTIES" > tools.properties
     - echo "$TOOLS_SLACK_PROPERTIES" > slack.properties
     - echo "$TOOLS_CONFLUENCE_PROPERTIES" > confluence.properties
-    - wget -O tools.jar $URL_TOOLS_JAR
+    - wget -O tools.jar $TOOLS_JAR_URL
   tags:
     - docker
 
