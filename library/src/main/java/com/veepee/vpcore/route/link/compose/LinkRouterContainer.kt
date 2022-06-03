@@ -13,8 +13,32 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.routes
-// This should be some repository and be in another shared module.
-object LoginStatus {
-    var isLogged = false
+
+package com.veepee.vpcore.route.link.compose
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
+import androidx.compose.ui.Modifier
+import com.veepee.vpcore.route.Router
+
+val LocalLinkRouter = staticCompositionLocalOf<Router> {
+    error("no local Router provided")
+}
+
+@Composable
+fun LinkRouterContainer(
+    router: Router,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalLinkRouter provides router,
+    ) {
+        content()
+    }
+}
+
+@Composable
+fun ComposableFor(link: ComposableLink<ComposableName>, modifier: Modifier = Modifier) {
+    LocalLinkRouter.current.ComposeFor(composableLink = link, modifier)
 }

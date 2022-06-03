@@ -13,8 +13,7 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.routes
-// This should be some repository and be in another shared module.
-object LoginStatus {
-    var isLogged = false
-}
+package com.veepee.vpcore.route.link.compose
+
+internal class NoComposableNameMapperException(composableLink: ComposableLink<ComposableName>) :
+    IllegalArgumentException("$composableLink has no registered ComposableNameMapper registered for it.")

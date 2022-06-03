@@ -18,8 +18,18 @@ package com.veepee.feature.a
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.ComposeView
 import com.veepee.routes.feature_a.FragmentALink
+import com.veepee.routes.feature_b.FeatureBComposableLink
 import com.veepee.routes.router
+import com.veepee.vpcore.route.link.compose.ComposableFor
+import com.veepee.vpcore.route.link.compose.LinkRouterContainer
 
 class AActivity : AppCompatActivity(R.layout.a_activity) {
 
@@ -33,9 +43,32 @@ class AActivity : AppCompatActivity(R.layout.a_activity) {
         }
         if (savedInstanceState == null) {
             val fragment = router.fragmentFor(FragmentALink)
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
+            supportFragmentManager.beginTransaction().replace(R.id.fragmentContainer, fragment)
                 .commit()
         }
+        findViewById<ComposeView>(R.id.composeView).setContent {
+            MyRootComposition()
+        }
+    }
+}
+
+@Composable
+private fun MyRootComposition() {
+    LinkRouterContainer(router = router) {
+        Column {
+            ComposableFor(
+                FeatureBComposableLink("1 - AActivity sent this text to a Composable in B Module"),
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.Yellow)
+            )
+            ComposableFor(
+                FeatureBComposableLink("2 - AActivity sent this text to a Composable in B Module"),
+                Modifier
+                    .fillMaxWidth()
+                    .background(Color.Green)
+            )
+        }
+
     }
 }

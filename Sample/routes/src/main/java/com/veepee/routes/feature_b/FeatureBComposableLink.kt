@@ -13,8 +13,21 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.routes
-// This should be some repository and be in another shared module.
-object LoginStatus {
-    var isLogged = false
+package com.veepee.routes.feature_b
+
+import com.veepee.vpcore.route.link.compose.ComposableLink
+import com.veepee.vpcore.route.link.compose.ComposableName
+import com.veepee.vpcore.route.link.compose.ComposableParameter
+
+enum class ComposableBNames : ComposableName {
+    ComposableB
 }
+
+data class FeatureBComposableLink(
+    override val parameter: FeatureBComposableParameter
+) : ComposableLink<ComposableBNames> {
+    override val composableName: ComposableBNames = ComposableBNames.ComposableB
+    constructor(message: String): this(FeatureBComposableParameter(message))
+}
+
+data class FeatureBComposableParameter(val message: String) : ComposableParameter
