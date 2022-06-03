@@ -18,12 +18,52 @@ package com.veepee.vpcore.route.link.fragment
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import com.veepee.vpcore.route.link.fragment.chain.FragmentLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.ChainFactory
+import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 import com.veepee.vpcore.route.setLinkParameter
 
 interface FragmentLinkRouter {
     fun fragmentFor(fragmentLink: FragmentLink<FragmentName>): Fragment
     fun dialogFragmentFor(fragmentLink: DialogFragmentLink<DialogFragmentName>): DialogFragment
+
+    interface Builder {
+        fun add(fragmentNameMapper: FragmentNameMapper<out FragmentName>): Builder
+        fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): Builder
+        fun newBuilder(): Builder
+        fun build(): FragmentLinkRouter
+    }
+}
+
+class FragmentLinkRouterBuilder(
+    private val fragmentNameMappersRegistry: MutableSet<FragmentNameMapper<out FragmentName>> = mutableSetOf(),
+    private val fragmentLinkInterceptorsRegistry: MutableList<FragmentLinkInterceptor> = mutableListOf()
+
+) : FragmentLinkRouter.Builder {
+
+    override fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): FragmentLinkRouter.Builder {
+        fragmentLinkInterceptorsRegistry.add(fragmentLinkInterceptor)
+        return this
+    }
+
+    override fun add(fragmentNameMapper: FragmentNameMapper<out FragmentName>): FragmentLinkRouter.Builder {
+        fragmentNameMappersRegistry.add(fragmentNameMapper)
+        return this
+    }
+
+    override fun newBuilder(): FragmentLinkRouter.Builder {
+        return FragmentLinkRouterBuilder(
+            fragmentNameMappersRegistry.toMutableSet(),
+            fragmentLinkInterceptorsRegistry.toMutableList()
+        )
+    }
+
+    override fun build(): FragmentLinkRouter {
+        return FragmentLinkRouterImpl(
+            fragmentNameMappersRegistry.toSet(),
+            ChainFactoryImpl(fragmentLinkInterceptorsRegistry.toList())
+        )
+    }
 }
 
 @Suppress("UNCHECKED_CAST")

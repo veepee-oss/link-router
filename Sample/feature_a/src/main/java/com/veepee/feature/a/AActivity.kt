@@ -53,18 +53,19 @@ class AActivity : AppCompatActivity(R.layout.a_activity) {
 }
 
 @Composable
-private fun MyRootComposition() {
+private fun MyRootComposition(modifier: Modifier = Modifier) {
+
     LinkRouterContainer(router = router) {
         Column {
             ComposableFor(
                 FeatureBComposableLink("1 - AActivity sent this text to a Composable in B Module"),
-                Modifier
+                modifier
                     .fillMaxWidth()
                     .background(Color.Yellow)
             )
             ComposableFor(
                 FeatureBComposableLink("2 - AActivity sent this text to a Composable in B Module"),
-                Modifier
+                modifier
                     .fillMaxWidth()
                     .background(Color.Green)
             )

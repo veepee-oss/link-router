@@ -17,11 +17,50 @@ package com.veepee.vpcore.route.link.activity
 
 import android.content.Context
 import android.content.Intent
+import com.veepee.vpcore.route.link.activity.chain.ActivityLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.ChainFactory
+import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 import com.veepee.vpcore.route.setLinkParameter
 
 interface ActivityLinkRouter {
     fun intentFor(context: Context, activityLink: ActivityLink<ActivityName>): Intent
+
+    interface Builder {
+        fun add(activityLinkInterceptor: ActivityLinkInterceptor): Builder
+        fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): Builder
+        fun newBuilder(): Builder
+        fun build(): ActivityLinkRouter
+    }
+}
+
+class ActivityLinkRouterBuilder(
+    private val activityNameMappersRegistry: MutableSet<ActivityNameMapper<out ActivityName>> = mutableSetOf(),
+    private val activityLinkInterceptorsRegistry: MutableList<ActivityLinkInterceptor> = mutableListOf()
+) : ActivityLinkRouter.Builder {
+
+    override fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): ActivityLinkRouter.Builder {
+        activityNameMappersRegistry.add(activityNameMapper)
+        return this
+    }
+
+    override fun add(activityLinkInterceptor: ActivityLinkInterceptor): ActivityLinkRouter.Builder {
+        activityLinkInterceptorsRegistry.add(activityLinkInterceptor)
+        return this
+    }
+
+    override fun newBuilder(): ActivityLinkRouter.Builder {
+        return ActivityLinkRouterBuilder(
+            activityNameMappersRegistry.toMutableSet(),
+            activityLinkInterceptorsRegistry.toMutableList()
+        )
+    }
+
+    override fun build(): ActivityLinkRouter {
+        return ActivityLinkRouterImpl(
+            activityNameMappersRegistry.toSet(),
+            ChainFactoryImpl(activityLinkInterceptorsRegistry.toList())
+        )
+    }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -44,7 +83,9 @@ internal class ActivityLinkRouterImpl(
         val chain = chainFactory.create()
 
         val mapper =
-            activityLinkMappers[activityLink.activityName] ?: throw NoActivityNameMapperException(activityLink)
+            activityLinkMappers[activityLink.activityName] ?: throw NoActivityNameMapperException(
+                activityLink
+            )
 
         val newActivityLink = chain.next(mapper, activityLink)
         if (newActivityLink != activityLink) {
