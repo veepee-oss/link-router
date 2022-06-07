@@ -47,14 +47,13 @@ class AActivity : AppCompatActivity(R.layout.a_activity) {
                 .commit()
         }
         findViewById<ComposeView>(R.id.composeView).setContent {
-            MyRootComposition()
+            ARootComposition()
         }
     }
 }
 
 @Composable
-private fun MyRootComposition(modifier: Modifier = Modifier) {
-
+private fun ARootComposition(modifier: Modifier = Modifier) {
     LinkRouterContainer(router = router) {
         Column {
             ComposableFor(
@@ -70,6 +69,5 @@ private fun MyRootComposition(modifier: Modifier = Modifier) {
                     .background(Color.Green)
             )
         }
-
     }
 }

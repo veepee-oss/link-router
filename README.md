@@ -1,33 +1,32 @@
 # link-router
 
-This library contains the basic infrastructure for routing deepLinks, activities and fragments within a multi-module application
+This library contains the basic infrastructure for routing DeepLinks, Activities, Fragments and Composables within a multi-module application
 in a way that a feature module does not need to explicitly depend of another.
 
-### Why did we write this library?
-Not every project can follow the single Activity recommendation from Google, not every Activity has a public DeepLink to its screens.  
-Those are just some of the situations we find ourselves while working in a project that has been developed for many years.  
-We have screens that should only be accessed after the user is logged in, does Navigation Component help us with that?
-So we developed this library. 
-
-### This library does less, so you can do more
-There is no magic here, not even code generation, you will need to write code to make it work. 
-This library just gives you access to Intents and Fragments instances, it does not start activities for you or commit fragments.
-We will just give you access to things that you would would not have access without direct access to the classes.
-Ok, Ok, we do start activities when routing DeepLinks, but this is usually fine since we need to start a whole stack of Activities for you.
-
 ### Usage
-The basic concept is the same for all routing, at the app startup we register all deeplink, activities and fragments mappers.
-And in a separated module (like :routes) we share basic implementations that works as indirections to the real implementations.
+The basic concept is the same for all routing, at the app startup we register all Deeplink, Activities, Fragments and Compose mappers 
+and in a separated module (like :routes) we share basic "links" that work as indirections to the real implementations.
+
+### Abstractions
+Activities, Fragments and Composables have similar abstractions, so if you know how to route Activities, you know how to route Fragments and Composables.
+| Activity             | Fragment             | Composable             |
+|:--------------------:|:--------------------:|:--------------------:|
+| ActivityName         | FragmentName         | ComposableName         |
+| ActivityLink         | FragmentLink         | ComposableLink         |
+| ActivityNameMapper   | FragmentNameMapper   | ComposableNameMapper   |
+| ParcelableParameter  | ParcelableParameter  | ComposableParameter    |
+| ActivityLinkRouter   | FragmentLinkRouter   | ComposableLinkRouter   |
+
 
 ### Activities
 To make it possible to route your Activity into other modules we need to implement `ActivityName`,
-`ActivityLink<ActivityName>` and `ActivityNameMapper<ActivityName>` that reflects you needs.
+`ActivityLink<ActivityName>` and `ActivityNameMapper<ActivityName>` that reflects your needs.
 
-- `ActivityName` acts as key when routing to your Activity  #shared
-- `ActivityLink` binds the `ActivityName` with parameters we want to pass to that Activity and #shared
-- `ActivityNameMapper<ActivityName>` maps the `ActivityName` into an Activity class. #internal
+- `ActivityName` acts as key when routing to your Activity  # lives in a shared module
+- `ActivityLink` binds the `ActivityName` with parameters we want to pass to that Activity and # lives in a shared module
+- `ActivityNameMapper<ActivityName>` maps the `ActivityName` into an Activity class. # on your feature module
 
-#### Things we need to share
+#### Things we need to place in a shared module
 The `ActivityLink` and `ActivityName` are used to route, so the client module needs to have access to that implementation.
 You can place it in a `:routes` module or in any other shared  module that suits your needs (`:mydomain:routes`, maybe?).
 
@@ -47,8 +46,8 @@ class MyActivityLink(
 data class MyActivityParameter(val data: String) : ParcelableParameter
 
 ````
-#### Things that we keep inside
-With that key we can implement an `ActivityNameMapper<ActivityName>` in your feature module.
+#### Things that we keep inside our feature modules
+With that `ActivityName` we can implement an `ActivityNameMapper<ActivityName>` into your feature module.
 
 ```kotlin
 
@@ -90,21 +89,17 @@ object MyFeatureModuleActivityNameMapper :
 
 ```
 
-### Fragments
-Activities and Fragments have similar abstractions, so if you know how to route Activities, you know how to route Fragments.
-| Activity             | Fragment             |
-|:--------------------:|:--------------------:|
-| ActivityNameMapper   | FragmentNameMapper   |
-| ActivityName         | FragmentName         |
-
 ### DeepLinks
-To each DeepLink we need an implementation of `DeepLinkMapper<DeepLink>`, 
-where we describe for which apps that DeepLink is supported, what is the DeepLink authority and 
+The handling of DeepLinks is a bit different from the other components that we support.
+We don't define a `DeepLinkName` as DeepLink usually come in a String format and parsing/matching rules that are application specific.
+To each DeepLink we only need an implementation of `DeepLinkMapper<DeepLink>`, 
+where we describe for which schemes that DeepLink is supported, what is the DeepLink authority and 
 what stack of Activities should be created.
-````kotlin
+
+```kotlin
 object MyDeepLinkMapper : DeepLinkMapper<UriDeepLink> {
     override val supportedSchemes: Array<Scheme> = arrayOf(Schemes.publicAppSchemes)
-    override val supportedAuthority: String = "my schemne"
+    override val supportedAuthority: String = "my_authority"
 
     override fun stack(deepLink: UriDeepLink): Array<ActivityLink<ActivityName>> {
         return arrayOf(
@@ -117,7 +112,25 @@ object MyDeepLinkMapper : DeepLinkMapper<UriDeepLink> {
     }
 }
 
-````
+```
+Since you are in charge of defining what parameters to pass to each `ActivityLink`, 
+you can use it to define your app state and navigate internally to a given 
+Fragment or Composable back stack that you see convenient to your business logic.
+
+
+### Compose
+Define your `ComposeName`, `ComposableLink`, `ComposableLinkMapper` and set in the root of your 
+Composable tree a `LinkRouterContainer` with an instance of `LinkRouter` reference configured by you.
+With that you can call `ComposableFor` with a `ComposableLink` and optionally a `Modifier`.
+
+```kotlin
+LinkRouterContainer(router = router) {
+        ComposableFor(
+            FeatureBComposableLink("Some text"),
+            Modifier
+        )
+    }
+```
 
 ### Runtime registration
 You can use the `Application.create()` method or Googles StartUp library to register your mappers.
