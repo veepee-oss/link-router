@@ -20,15 +20,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
-import com.veepee.vpcore.route.Router
+import com.veepee.vpcore.route.LinkRouter
 
-val LocalLinkRouter = staticCompositionLocalOf<Router> {
+val LocalLinkRouter = staticCompositionLocalOf<LinkRouter> {
     error("no local Router provided")
 }
 
 @Composable
 fun LinkRouterContainer(
-    router: Router,
+    router: LinkRouter,
     content: @Composable () -> Unit
 ) {
     CompositionLocalProvider(

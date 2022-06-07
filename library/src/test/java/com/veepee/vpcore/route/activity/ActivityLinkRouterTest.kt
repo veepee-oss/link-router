@@ -22,7 +22,11 @@ import com.veepee.vpcore.route.activity.feature.TestActivityNameMapper
 import com.veepee.vpcore.route.activity.route.TestActivityALink
 import com.veepee.vpcore.route.activity.route.TestActivityBLink
 import com.veepee.vpcore.route.activity.route.TestActivityBParameter
-import com.veepee.vpcore.route.link.activity.*
+import com.veepee.vpcore.route.link.activity.ActivityLink
+import com.veepee.vpcore.route.link.activity.ActivityLinkRouterImpl
+import com.veepee.vpcore.route.link.activity.ActivityName
+import com.veepee.vpcore.route.link.activity.ActivityNameMapper
+import com.veepee.vpcore.route.link.activity.NoActivityNameMapperException
 import com.veepee.vpcore.route.link.activity.chain.ActivityLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.Chain
 import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl

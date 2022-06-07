@@ -16,6 +16,6 @@
 package com.veepee.routes
 
 import com.veepee.vpcore.route.GlobalRouterBuilder
-import com.veepee.vpcore.route.Router
+import com.veepee.vpcore.route.LinkRouter
 
-val router: Router by lazy { GlobalRouterBuilder.build() }
+val router: LinkRouter by lazy { GlobalRouterBuilder.build() }

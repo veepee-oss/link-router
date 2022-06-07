@@ -36,11 +36,14 @@ import com.veepee.vpcore.route.link.fragment.FragmentName
 import com.veepee.vpcore.route.link.fragment.FragmentNameMapper
 import com.veepee.vpcore.route.link.fragment.chain.FragmentLinkInterceptor
 
+@Deprecated("We renamed this class to LinkRouter", ReplaceWith("LinkRouter"))
+typealias Router = LinkRouter
+
 /**
  * Router delegates detail implementations to other implementations, but is the responsible for
  * retrieving Intents or Fragments and for routing DeepLinks.
  * */
-interface Router :
+interface LinkRouter :
     DeepLinkRouter,
     ActivityLinkRouter,
     FragmentLinkRouter,
@@ -60,77 +63,77 @@ interface Router :
         fun add(composableNameMapper: ComposableNameMapper<out ComposableName>): Builder
 
         fun newBuilder(): Builder
-        fun build(): Router
+        fun build(): LinkRouter
     }
 }
 
-val GlobalRouterBuilder: RouterBuilder = RouterBuilder(
+val GlobalRouterBuilder: LinkRouterBuilder = LinkRouterBuilder(
     activityLinkRouterBuilder = ActivityLinkRouterBuilder(),
     fragmentLinkRouterBuilder = FragmentLinkRouterBuilder(),
     deepLinkRouterBuilder = DeepLinkRouterBuilder(),
     composableLinkRouterBuilder = ComposeLinkRouterBuilder()
 )
 
-internal class RouterImpl(
+internal class LinkRouterImpl(
     private val deepLinkRouter: DeepLinkRouter,
     private val activityLinkRouter: ActivityLinkRouter,
     private val fragmentLinkRouter: FragmentLinkRouter,
     private val composableLinkRouter: ComposableLinkRouter,
-) : Router,
+) : LinkRouter,
     DeepLinkRouter by deepLinkRouter,
     ActivityLinkRouter by activityLinkRouter,
     FragmentLinkRouter by fragmentLinkRouter,
     ComposableLinkRouter by composableLinkRouter
 
-class RouterBuilder(
+class LinkRouterBuilder(
     private val activityLinkRouterBuilder: ActivityLinkRouter.Builder,
     private val fragmentLinkRouterBuilder: FragmentLinkRouter.Builder,
     private val deepLinkRouterBuilder: DeepLinkRouter.Builder,
     private val composableLinkRouterBuilder: ComposableLinkRouter.Builder
-) : Router.Builder {
+) : LinkRouter.Builder {
 
-    override fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): Router.Builder {
+    override fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): LinkRouter.Builder {
         activityLinkRouterBuilder.add(activityNameMapper)
         return this
     }
 
-    override fun add(activityLinkInterceptor: ActivityLinkInterceptor): Router.Builder {
+    override fun add(activityLinkInterceptor: ActivityLinkInterceptor): LinkRouter.Builder {
         activityLinkRouterBuilder.add(activityLinkInterceptor)
         return this
     }
 
-    override fun add(fragmentNameMapper: FragmentNameMapper<out FragmentName>): Router.Builder {
+    override fun add(fragmentNameMapper: FragmentNameMapper<out FragmentName>): LinkRouter.Builder {
         fragmentLinkRouterBuilder.add(fragmentNameMapper)
         return this
     }
 
-    override fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): Router.Builder {
+    override fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): LinkRouter.Builder {
         fragmentLinkRouterBuilder.add(fragmentLinkInterceptor)
         return this
     }
 
-    override fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): Router.Builder {
+    override fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): LinkRouter.Builder {
         deepLinkRouterBuilder.add(deepLinkMapper)
         return this
     }
 
-    override fun add(deepLinkInterceptor: DeepLinkInterceptor): Router.Builder {
+    override fun add(deepLinkInterceptor: DeepLinkInterceptor): LinkRouter.Builder {
         deepLinkRouterBuilder.add(deepLinkInterceptor)
         return this
     }
 
-    override fun add(composableNameMapper: ComposableNameMapper<out ComposableName>): Router.Builder {
+    override fun add(composableNameMapper: ComposableNameMapper<out ComposableName>): LinkRouter.Builder {
         composableLinkRouterBuilder.add(composableNameMapper)
         return this
     }
 
-    override fun add(composableLinkInterceptor: ComposableLinkInterceptor): Router.Builder {
+    override fun add(composableLinkInterceptor: ComposableLinkInterceptor): LinkRouter.Builder {
         composableLinkRouterBuilder.add(composableLinkInterceptor)
         return this
     }
 
-    override fun newBuilder(): Router.Builder {
-        return RouterBuilder(
+    override fun newBuilder(): LinkRouter.Builder {
+        return LinkRouterBuilder(
             activityLinkRouterBuilder.newBuilder(),
             fragmentLinkRouterBuilder.newBuilder(),
             deepLinkRouterBuilder.newBuilder(),
@@ -138,12 +141,12 @@ class RouterBuilder(
         )
     }
 
-    override fun build(): Router {
+    override fun build(): LinkRouter {
         val activityLinkRouter = activityLinkRouterBuilder.build()
         val fragmentLinkRouter = fragmentLinkRouterBuilder.build()
         val deepLinkRouter = deepLinkRouterBuilder.build(activityLinkRouter)
         val composableLinkRouter = composableLinkRouterBuilder.build()
-        return RouterImpl(
+        return LinkRouterImpl(
             deepLinkRouter = deepLinkRouter,
             activityLinkRouter = activityLinkRouter,
             fragmentLinkRouter = fragmentLinkRouter,
