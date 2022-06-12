@@ -14,12 +14,14 @@ dependencyResolutionManagement {
             library('material.components', 'com.google.android.material', 'material').versionRef(version('material', '1.6.0'))
             library('test.junit', 'junit', 'junit').versionRef(version('junit', '4.13.1'))
             library('test.androidx.test.core', 'androidx.test', 'core-ktx').versionRef(version('core-test', '1.4.0'))
-            library('test.robolectric', 'org.robolectric', 'robolectric').versionRef(version('robolectric', '4.6.1'))
+            library('test.robolectric', 'org.robolectric', 'robolectric').versionRef(version('robolectric', '4.8.1'))
             library('test.mockito.inline', 'org.mockito', 'mockito-inline').versionRef(version('mockito-inline', '3.11.2'))
             library('test.mockito.kotlin', 'org.mockito.kotlin', 'mockito-kotlin').versionRef(version('mockito-kotlin', '3.2.0'))
+
             def composeVersion = version('compose', '1.2.0-beta03')
             library('androidx.compose.foundation', 'androidx.compose.foundation', 'foundation').versionRef(composeVersion)
-
+            library('androidx.compose.ui.test', 'androidx.compose.ui', 'ui-test-junit4').versionRef(composeVersion)
+            library('androidx.compose.ui.test.manifest', 'androidx.compose.ui', 'ui-test-manifest').versionRef(composeVersion)
         }
     }
 }

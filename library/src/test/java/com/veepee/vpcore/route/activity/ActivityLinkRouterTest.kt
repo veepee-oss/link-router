@@ -87,8 +87,8 @@ class ActivityLinkRouterTest {
         }
         val router = ActivityLinkRouterImpl(mappers, ChainFactoryImpl(listOf(interceptor)))
         val activity: Activity = mock()
-        val intent1 = router.intentFor(activity, TestActivityALink)
-        assertEquals(intent1.component!!.className, TestActivityB::class.java.name)
+        val intent = router.intentFor(activity, TestActivityALink)
+        assertEquals(intent.component!!.className, TestActivityB::class.java.name)
     }
 
     private fun assertIntentFor(

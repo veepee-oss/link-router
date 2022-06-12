@@ -90,6 +90,7 @@ class LinkRouterBuilder(
     private val fragmentLinkRouterBuilder: FragmentLinkRouter.Builder,
     private val deepLinkRouterBuilder: DeepLinkRouter.Builder,
     private val composableLinkRouterBuilder: ComposableLinkRouter.Builder
+
 ) : LinkRouter.Builder {
 
     override fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): LinkRouter.Builder {
@@ -134,6 +135,7 @@ class LinkRouterBuilder(
 
     override fun newBuilder(): LinkRouter.Builder {
         return LinkRouterBuilder(
+
             activityLinkRouterBuilder.newBuilder(),
             fragmentLinkRouterBuilder.newBuilder(),
             deepLinkRouterBuilder.newBuilder(),
