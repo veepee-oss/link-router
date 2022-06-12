@@ -1,6 +1,16 @@
 Change Log
 ==========
 
+Release 0.3.0
+--------------
+
+### CORE
+ * [Add support for Compose](https://git.vptech.eu/veepee/offerdiscovery/products/front-mobile/android/link-router/-/merge_requests/13)
+ * [update README and change update the router name from Router to LinkRouter](https://git.vptech.eu/veepee/offerdiscovery/products/front-mobile/android/link-router/-/merge_requests/17)
+ * [Create individual builders for each supported routing type](https://git.vptech.eu/veepee/offerdiscovery/products/front-mobile/android/link-router/-/merge_requests/14)
+ * [update urls for docker image and tools and adds unit tests running in gitlab](https://git.vptech.eu/veepee/offerdiscovery/products/front-mobile/android/link-router/-/merge_requests/15)
+
+
 Release 0.2.0
 --------------
 
