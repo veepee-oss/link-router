@@ -37,6 +37,12 @@ android {
     composeOptions {
         kotlinCompilerExtensionVersion '1.2.0-beta03'
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -51,6 +57,9 @@ dependencies {
     testImplementation libs.test.mockito.inline
     testImplementation libs.test.mockito.kotlin
     testImplementation libs.test.androidx.test.core
+
+    testImplementation libs.androidx.compose.ui.test
+    testImplementation libs.androidx.compose.ui.test.manifest
 }
 
 task sourceJar(type: Jar) {

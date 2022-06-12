@@ -54,6 +54,7 @@ class AActivity : AppCompatActivity(R.layout.a_activity) {
 
 @Composable
 private fun ARootComposition(modifier: Modifier = Modifier) {
+
     LinkRouterContainer(router = router) {
         Column {
             ComposableFor(

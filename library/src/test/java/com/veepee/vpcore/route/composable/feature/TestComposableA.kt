@@ -13,12 +13,13 @@
  * TORTIOUS ACTION, ARISING OUT OF OR  IN CONNECTION WITH THE USE OR PERFORMANCE OF
  * THIS SOFTWARE.
  */
-package com.veepee.vpcore.route.activity.feature
+package com.veepee.vpcore.route.composable.feature
 
-import android.app.Activity
-import com.veepee.vpcore.route.activity.route.TestActivityBParameter
-import com.veepee.vpcore.route.requireLinkParameter
+import androidx.compose.foundation.text.BasicText
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 
-internal class TestActivityB : Activity() {
-    private val param by lazy { requireLinkParameter<TestActivityBParameter>() }
+@Composable
+fun TestComposableA(modifier: Modifier) {
+    BasicText(text = "Hello World", modifier)
 }
