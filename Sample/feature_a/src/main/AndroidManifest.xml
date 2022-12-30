@@ -6,6 +6,7 @@
         <activity
             android:name="com.veepee.feature.a.AActivity"
             android:label="AActivity"
+            android:exported="false"
             android:theme="@style/Theme.Sample" />
     </application>
 

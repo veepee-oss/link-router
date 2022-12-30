@@ -4,8 +4,9 @@
 
     <application>
         <activity
-            android:label="BActivity"
             android:name=".BActivity"
+            android:exported="false"
+            android:label="BActivity"
             android:theme="@style/Theme.Sample" />
     </application>
 

@@ -36,9 +36,6 @@ import com.veepee.vpcore.route.link.fragment.FragmentName
 import com.veepee.vpcore.route.link.fragment.FragmentNameMapper
 import com.veepee.vpcore.route.link.fragment.chain.FragmentLinkInterceptor
 
-@Deprecated("We renamed this class to LinkRouter", ReplaceWith("LinkRouter"))
-typealias Router = LinkRouter
-
 /**
  * Router delegates detail implementations to other implementations, but is the responsible for
  * retrieving Intents or Fragments and for routing DeepLinks.
@@ -135,7 +132,6 @@ class LinkRouterBuilder(
 
     override fun newBuilder(): LinkRouter.Builder {
         return LinkRouterBuilder(
-
             activityLinkRouterBuilder.newBuilder(),
             fragmentLinkRouterBuilder.newBuilder(),
             deepLinkRouterBuilder.newBuilder(),
