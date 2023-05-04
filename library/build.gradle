@@ -6,11 +6,14 @@ plugins {
 }
 
 android {
-    compileSdkVersion 33
-
+    namespace = "com.veepee.vpcore.link.route"
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 33
+        compileSdk 33
+        aarMetadata {
+            minCompileSdk = 21
+        }
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -34,12 +37,18 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.0-alpha02'
+        kotlinCompilerExtensionVersion '1.4.6'
     }
 
     testOptions {
         unitTests {
             includeAndroidResources = true
+        }
+    }
+    publishing {
+        singleVariant("release") {
+            withSourcesJar()
+            withJavadocJar()
         }
     }
 }
@@ -61,10 +70,6 @@ dependencies {
     testImplementation libs.androidx.compose.ui.test.manifest
 }
 
-task sourceJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier "sources"
-}
 afterEvaluate {
     publishing {
         repositories {
@@ -83,7 +88,6 @@ afterEvaluate {
                 artifactId "link-router"
                 version System.getenv('RELEASE_VERSION')
                 from components.release
-                artifact(sourceJar)
             }
         }
     }

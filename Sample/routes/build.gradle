@@ -5,12 +5,12 @@ plugins {
 }
 
 android {
-    compileSdkVersion 32
-    buildToolsVersion "30.0.3"
+    namespace "com.veepee.routes"
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33
+        compileSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -38,5 +38,5 @@ dependencies {
     implementation libs.androidx.appcompat
     implementation libs.material
 
-    api 'com.veepee.vpcore.link-router:link-router:1.0.0'
+    api 'com.veepee.vpcore.link-router:link-router:0.3.0'
 }

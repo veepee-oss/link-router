@@ -18,6 +18,7 @@ package com.veepee.vpcore.route
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.app.BundleCompat
 import androidx.fragment.app.Fragment
 import com.veepee.vpcore.route.link.Parameter
 import com.veepee.vpcore.route.link.ParcelableParameter

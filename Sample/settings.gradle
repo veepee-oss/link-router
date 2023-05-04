@@ -1,10 +1,8 @@
-enableFeaturePreview('VERSION_CATALOGS')
 rootProject.name = "sample"
 include ':app'
 include ':feature_a'
 include ':feature_b'
 include ':login'
-
 
 includeBuild('../') {
     dependencySubstitution {
@@ -18,11 +16,11 @@ include ':routes'
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            def kotlinVersion = version('koltin', "1.6.21")
+            def kotlinVersion = version('koltin', "1.8.20")
             library('lang.kotlin', 'org.jetbrains.kotlin', 'kotlin-stdlib').versionRef(kotlinVersion)
-            library('androidx.core', 'androidx.core', 'core').versionRef(version('core', '1.8.0'))
-            library('androidx.appcompat', 'androidx.appcompat', 'appcompat').versionRef(version('appcompat', '1.4.2'))
-            library('androidx.fragment', 'androidx.fragment', 'fragment').versionRef(version('fragment', '1.4.1'))
+            library('androidx.core', 'androidx.core', 'core').versionRef(version('core', '1.10.0'))
+            library('androidx.appcompat', 'androidx.appcompat', 'appcompat').versionRef(version('appcompat', '1.6.1'))
+            library('androidx.fragment', 'androidx.fragment', 'fragment').versionRef(version('fragment', '1.5.7'))
             library('androidx.constraint.layout', 'androidx.constraintlayout', 'constraintlayout').versionRef(version('constanstlayout', '2.0.4'))
             library('material', 'com.google.android.material', 'material').versionRef(version('material', '1.6.0'))
             library('test.junit', 'junit', 'junit').versionRef(version('junit', '4.13.1'))
@@ -30,7 +28,7 @@ dependencyResolutionManagement {
             library('test.robolectric', 'org.robolectric', 'robolectric').versionRef(version('robolectric', '4.8.1'))
             library('test.mockito.inline', 'org.mockito', 'mockito-inline').versionRef(version('mockito-inline', '3.11.2'))
             library('test.mockito.kotlin', 'org.mockito.kotlin', 'mockito-kotlin').versionRef(version('mockito-kotlin', '3.2.0'))
-            def composeVersion = version('compose', '1.2.0-beta03')
+            def composeVersion = version('compose', '1.4.2')
             library('androidx.compose.foundation', 'androidx.compose.foundation', 'foundation').versionRef(composeVersion)
         }
     }
