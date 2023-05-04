@@ -29,6 +29,7 @@ import com.veepee.vpcore.route.link.deeplink.DeepLink
 import com.veepee.vpcore.route.link.deeplink.DeepLinkMapper
 import com.veepee.vpcore.route.link.deeplink.DeepLinkRouter
 import com.veepee.vpcore.route.link.deeplink.DeepLinkRouterBuilder
+import com.veepee.vpcore.route.link.deeplink.StackBuilderFactory
 import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
 import com.veepee.vpcore.route.link.fragment.FragmentLinkRouter
 import com.veepee.vpcore.route.link.fragment.FragmentLinkRouterBuilder
@@ -61,6 +62,7 @@ interface LinkRouter :
 
         fun newBuilder(): Builder
         fun build(): LinkRouter
+        fun setStackBuilderFactory(stackBuilderFactory: StackBuilderFactory): Builder
     }
 }
 
@@ -127,6 +129,11 @@ class LinkRouterBuilder(
 
     override fun add(composableLinkInterceptor: ComposableLinkInterceptor): LinkRouter.Builder {
         composableLinkRouterBuilder.add(composableLinkInterceptor)
+        return this
+    }
+
+    override fun setStackBuilderFactory(stackBuilderFactory: StackBuilderFactory): LinkRouter.Builder {
+        deepLinkRouterBuilder.setStackBuilderFactory(stackBuilderFactory)
         return this
     }
 

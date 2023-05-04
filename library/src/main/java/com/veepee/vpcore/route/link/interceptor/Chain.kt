@@ -27,10 +27,10 @@ interface ChainFactory<Mapper, Link> {
 }
 
 internal class ChainFactoryImpl<Mapper, Link>(
-    private val initialInterceptors: List<LinkInterceptor<Mapper, Link>>
+    private val interceptors: List<LinkInterceptor<Mapper, Link>>
 ) : ChainFactory<Mapper, Link> {
     override fun create(): Chain<Mapper, Link> {
-        return ChainImpl(initialInterceptors + DefaultInterceptor())
+        return ChainImpl(interceptors + DefaultInterceptor())
     }
 }
 
