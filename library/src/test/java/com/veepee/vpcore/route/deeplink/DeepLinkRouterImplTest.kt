@@ -18,6 +18,7 @@ package com.veepee.vpcore.route.deeplink
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import com.veepee.vpcore.route.GlobalRouterBuilder
 import com.veepee.vpcore.route.activity.route.TestActivityALink
 import com.veepee.vpcore.route.activity.route.TestActivityBLink
 import com.veepee.vpcore.route.activity.route.TestActivityBParameter
@@ -30,6 +31,7 @@ import com.veepee.vpcore.route.link.deeplink.DeepLinkRouterImpl
 import com.veepee.vpcore.route.link.deeplink.NoDeepLinkMapperException
 import com.veepee.vpcore.route.link.deeplink.StackBuilder
 import com.veepee.vpcore.route.link.deeplink.StackBuilderFactory
+import com.veepee.vpcore.route.link.deeplink.StackBuilderImpl
 import com.veepee.vpcore.route.link.deeplink.UriDeepLink
 import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.Chain
@@ -81,10 +83,10 @@ class DeepLinkRouterImplTest {
     @Test
     fun `should route DeepLink`() {
         val router = DeepLinkRouterImpl(
-            mappers,
-            activityLinkRouter,
-            stackBuilderFactory,
-            chainFactory
+            initialDeepLinkMappers = mappers,
+            activityLinkRouter = activityLinkRouter,
+            stackBuilderFactory = stackBuilderFactory,
+            chainFactory = chainFactory
         )
 
         whenever(deepLink.authority).thenReturn("www.google.com")
@@ -101,6 +103,9 @@ class DeepLinkRouterImplTest {
 
     @Test
     fun `should fail to route due missing mapper`() {
+        GlobalRouterBuilder.newBuilder().setStackBuilderFactory{
+            StackBuilderImpl(it)
+        }.build()
         val router = DeepLinkRouterImpl(
             emptySet(),
             activityLinkRouter,

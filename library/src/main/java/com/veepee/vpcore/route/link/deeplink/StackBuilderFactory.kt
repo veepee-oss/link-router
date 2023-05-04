@@ -20,7 +20,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.core.content.ContextCompat
 
-internal interface StackBuilderFactory {
+fun interface StackBuilderFactory {
     fun create(context: Context): StackBuilder
 }
 
@@ -30,12 +30,12 @@ internal class StackBuilderFactoryImpl : StackBuilderFactory {
     }
 }
 
-internal interface StackBuilder {
+interface StackBuilder {
     fun addNextIntent(intent: Intent)
     fun startActivities()
 }
 
-internal class StackBuilderImpl(private val context: Context) : StackBuilder {
+ class StackBuilderImpl(private val context: Context) : StackBuilder {
     private val intents = mutableListOf<Intent>()
     override fun addNextIntent(intent: Intent) {
         intents.add(intent)

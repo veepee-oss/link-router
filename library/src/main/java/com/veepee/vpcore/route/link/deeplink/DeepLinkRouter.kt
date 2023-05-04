@@ -29,6 +29,7 @@ interface DeepLinkRouter {
         fun add(deepLinkInterceptor: DeepLinkInterceptor): Builder
         fun newBuilder(): Builder
         fun build(activityLinkRouter: ActivityLinkRouter): DeepLinkRouter
+        fun setStackBuilderFactory(stackBuilderFactory: StackBuilderFactory): Builder
     }
 }
 
@@ -36,7 +37,7 @@ class DeepLinkRouterBuilder(
     private val deepLinkMappersRegistry: MutableSet<DeepLinkMapper<out DeepLink>> = mutableSetOf(),
     private val deepLinkInterceptorsRegistry: MutableList<DeepLinkInterceptor> = mutableListOf()
 ) : DeepLinkRouter.Builder {
-
+    private var stackBuilderFactory: StackBuilderFactory = StackBuilderFactoryImpl()
     override fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): DeepLinkRouter.Builder {
         deepLinkMappersRegistry.add(deepLinkMapper)
         return this
@@ -44,6 +45,11 @@ class DeepLinkRouterBuilder(
 
     override fun add(deepLinkInterceptor: DeepLinkInterceptor): DeepLinkRouter.Builder {
         deepLinkInterceptorsRegistry.add(deepLinkInterceptor)
+        return this
+    }
+
+    override fun setStackBuilderFactory(stackBuilderFactory: StackBuilderFactory): DeepLinkRouter.Builder {
+        this.stackBuilderFactory = stackBuilderFactory
         return this
     }
 
@@ -56,17 +62,17 @@ class DeepLinkRouterBuilder(
 
     override fun build(activityLinkRouter: ActivityLinkRouter): DeepLinkRouter {
         return DeepLinkRouterImpl(
-            deepLinkMappersRegistry.toSet(),
-            activityLinkRouter,
-            StackBuilderFactoryImpl(),
-            ChainFactoryImpl(deepLinkInterceptorsRegistry.toList())
+            initialDeepLinkMappers = deepLinkMappersRegistry.toSet(),
+            activityLinkRouter = activityLinkRouter,
+            stackBuilderFactory = stackBuilderFactory,
+            chainFactory = ChainFactoryImpl(deepLinkInterceptorsRegistry.toList())
         )
     }
 }
 
 internal class DeepLinkRouterImpl(
     initialDeepLinkMappers: Set<DeepLinkMapper<out DeepLink>>,
-    private val activityRouter: ActivityLinkRouter,
+    private val activityLinkRouter: ActivityLinkRouter,
     private val stackBuilderFactory: StackBuilderFactory,
     private val chainFactory: ChainFactory<DeepLinkMapper<out DeepLink>, DeepLink>
 ) : DeepLinkRouter {
@@ -88,7 +94,7 @@ internal class DeepLinkRouterImpl(
 
         val stackBuilder = stackBuilderFactory.create(context)
         mapper.stack(deepLink)
-            .map { activityLink -> activityRouter.intentFor(context, activityLink) }
+            .map { activityLink -> activityLinkRouter.intentFor(context, activityLink) }
             .forEach { intent -> stackBuilder.addNextIntent(intent) }
 
         stackBuilder.startActivities()
