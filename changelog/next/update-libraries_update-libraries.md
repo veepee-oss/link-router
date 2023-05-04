@@ -1,6 +1,6 @@
 ---
-title: Update libraries
-url: https://git.vptech.eu/veepee/offerdiscovery/products/front-mobile/android/link-router/-/merge_requests/19
+title: Update Link-Router libraries
+url: https://jira.vptech.eu/browse/FCAN-1818
 author: Julio Cesar Bueno Cotta
 ---
 
