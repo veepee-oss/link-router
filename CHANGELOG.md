@@ -1,6 +1,17 @@
 Change Log
 ==========
 
+Release 0.4.0
+--------------
+
+### CORE
+ * [Allow developers to change StackBuilderFactory](https://jira.vptech.eu/browse/FCAN-1820)
+ * [add support to fragment listener api](https://jira.vptech.eu/browse/FCAN-1822)
+
+### update
+ * [Update Link-Router libraries](https://jira.vptech.eu/browse/FCAN-1818)
+
+
 Release 0.3.0
 --------------
 
