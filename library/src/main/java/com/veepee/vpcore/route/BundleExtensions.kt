@@ -18,12 +18,14 @@ package com.veepee.vpcore.route
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import androidx.core.app.BundleCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleOwner
 import com.veepee.vpcore.route.link.Parameter
 import com.veepee.vpcore.route.link.ParcelableParameter
 
 internal val LINK_PARAMETER = "${Parameter::class.java.name}.LINK_PARAMETER"
+internal val LINK_PARAMETER_REQUEST_KEY = "${LINK_PARAMETER}_REQUEST_KEY"
 
 fun <T : ParcelableParameter> Activity.requireLinkParameter(): T {
     return intent.requireLinkParameter()
@@ -51,6 +53,24 @@ fun <T : ParcelableParameter> Fragment.requireLinkParameter(): T {
 
 fun <T : ParcelableParameter> Fragment.getLinkParameter(): T? {
     return arguments?.getParcelable(LINK_PARAMETER)
+}
+
+fun FragmentManager.setLinkParameterResult(
+    requestKey: String = LINK_PARAMETER_REQUEST_KEY,
+    parameter: ParcelableParameter
+) {
+    setFragmentResult(requestKey, parameter.asBundle())
+}
+
+fun <T : ParcelableParameter> FragmentManager.setLinkParameterResultListener(
+    requestKey: String = LINK_PARAMETER_REQUEST_KEY,
+    lifecycleOwner: LifecycleOwner,
+    listener: (T) -> Unit
+) {
+    setFragmentResultListener(
+        requestKey,
+        lifecycleOwner
+    ) { _, bundle -> listener(bundle.requireLinkParameter()) }
 }
 
 fun Intent.setLinkParameter(parameter: ParcelableParameter?): Intent {
