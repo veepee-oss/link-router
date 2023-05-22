@@ -15,24 +15,30 @@
  */
 package com.veepee.vpcore.route.composable.feature
 
+import androidx.compose.foundation.clickable
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.veepee.vpcore.route.composable.route.TestComposableALink
 import com.veepee.vpcore.route.composable.route.TestComposableBLink
+import com.veepee.vpcore.route.composable.route.TestComposableBLinkEvent
 import com.veepee.vpcore.route.composable.route.TestComposableName
 import com.veepee.vpcore.route.link.compose.ComposableLink
 import com.veepee.vpcore.route.link.compose.ComposableNameMapper
+import com.veepee.vpcore.route.link.compose.events.LocalLinkRouterEventHandler
 
 object TestComposablesNameMapper : ComposableNameMapper<TestComposableName> {
     override val supportedNames: Array<TestComposableName> = TestComposableName.values()
 
     @Composable
     override fun Map(composableLink: ComposableLink<TestComposableName>, modifier: Modifier) {
+        val handler = LocalLinkRouterEventHandler.current
         when (composableLink) {
             is TestComposableALink -> TestComposableA(modifier = modifier)
             is TestComposableBLink -> TestComposableB(
                 composableLink.parameter.message,
-                modifier = modifier
+                modifier = modifier.clickable {
+                    handler.publish(TestComposableBLinkEvent("bar"))
+                }
             )
         }
     }

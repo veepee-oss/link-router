@@ -21,8 +21,13 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
 import com.veepee.vpcore.route.LinkRouter
+import com.veepee.vpcore.route.link.compose.events.LinkRouterEventHandlerContainer
 
 val LocalLinkRouter = staticCompositionLocalOf<LinkRouter> {
+    error("no local Router provided")
+}
+
+val LocalComposableLinkRouter = staticCompositionLocalOf<ComposableLinkRouter> {
     error("no local Router provided")
 }
 
@@ -34,11 +39,34 @@ fun LinkRouterContainer(
     CompositionLocalProvider(
         LocalLinkRouter provides router,
     ) {
+        ComposableLinkRouterContainer(router, content)
+    }
+}
+
+@Composable
+fun ComposableLinkRouterContainer(
+    router: ComposableLinkRouter,
+    content: @Composable () -> Unit
+) {
+    CompositionLocalProvider(
+        LocalComposableLinkRouter provides router
+    ) {
         content()
     }
 }
 
 @Composable
 fun ComposableFor(link: ComposableLink<ComposableName>, modifier: Modifier = Modifier) {
-    LocalLinkRouter.current.ComposeFor(composableLink = link, modifier)
+    LocalComposableLinkRouter.current.ComposeFor(composableLink = link, modifier)
+}
+
+@Composable
+inline fun <reified Event : ComposableEvent> ComposableFor(
+    link: ComposableLinkWithEvent<ComposableName, Event>,
+    modifier: Modifier = Modifier,
+    noinline onEvent: (Event) -> Unit
+) {
+    LinkRouterEventHandlerContainer(onEvent = onEvent) {
+        ComposableFor(link = link, modifier = modifier)
+    }
 }

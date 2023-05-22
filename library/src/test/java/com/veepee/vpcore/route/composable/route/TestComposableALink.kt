@@ -15,10 +15,11 @@
  */
 package com.veepee.vpcore.route.composable.route
 
-import com.veepee.vpcore.route.link.compose.ComposableLink
+import com.veepee.vpcore.route.link.compose.ComposableLinkWithEvent
 import com.veepee.vpcore.route.link.compose.ComposableParameter
+import com.veepee.vpcore.route.link.compose.NoEvent
 
-class TestComposableALink : ComposableLink<TestComposableName> {
+class TestComposableALink : ComposableLinkWithEvent<TestComposableName, NoEvent> {
     override val composableName: TestComposableName = TestComposableName.TestComposableA
     override val parameter: ComposableParameter? = null
 }
