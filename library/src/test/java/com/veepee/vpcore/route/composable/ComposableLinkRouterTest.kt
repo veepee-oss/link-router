@@ -18,11 +18,14 @@ package com.veepee.vpcore.route.composable
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import com.veepee.vpcore.route.composable.feature.TestComposablesNameMapper
 import com.veepee.vpcore.route.composable.route.TestComposableALink
 import com.veepee.vpcore.route.composable.route.TestComposableBLink
 import com.veepee.vpcore.route.composable.route.TestComposableBParameter
+import com.veepee.vpcore.route.link.compose.ComposableFor
 import com.veepee.vpcore.route.link.compose.ComposableLink
+import com.veepee.vpcore.route.link.compose.ComposableLinkRouterContainer
 import com.veepee.vpcore.route.link.compose.ComposableLinkRouterImpl
 import com.veepee.vpcore.route.link.compose.ComposableName
 import com.veepee.vpcore.route.link.compose.ComposableNameMapper
@@ -74,7 +77,6 @@ class ComposableLinkRouterTest {
     @Test
     fun `should route and display text given to composable`() {
         val router = ComposableLinkRouterImpl(mappers, ChainFactoryImpl(emptyList()))
-
         composeTestRule.setContent {
             router.ComposeFor(TestComposableBLink(TestComposableBParameter("message")))
         }
@@ -82,6 +84,27 @@ class ComposableLinkRouterTest {
         composeTestRule
             .onNodeWithText("message")
             .assertIsDisplayed()
+    }
+
+    @Test
+    fun `should route and consume result`() {
+        val router = ComposableLinkRouterImpl(mappers, ChainFactoryImpl(emptyList()))
+        var message = ""
+        composeTestRule.setContent {
+            ComposableLinkRouterContainer(router) {
+                ComposableFor(
+                    TestComposableBLink(TestComposableBParameter("message"))
+                ) { event ->
+                    message = event.foo
+                }
+            }
+        }
+
+        composeTestRule
+            .onNodeWithText("message")
+            .performClick()
+
+        Assert.assertEquals(message, "bar")
     }
 
     @Test

@@ -15,9 +15,11 @@
  */
 package com.veepee.vpcore.route.link.compose
 
+import com.veepee.vpcore.route.link.Event
 import com.veepee.vpcore.route.link.Link
 import com.veepee.vpcore.route.link.Parameter
 
+interface ComposableLinkWithEvent<out T : ComposableName, R : ComposableEvent> : ComposableLink<T>
 interface ComposableLink<out T : ComposableName> : Link {
     val composableName: T
     override val parameter: ComposableParameter?
@@ -25,3 +27,6 @@ interface ComposableLink<out T : ComposableName> : Link {
 
 interface ComposableParameter : Parameter
 
+interface ComposableEvent : Event
+
+object NoEvent : ComposableEvent
