@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Release 0.5.1
+--------------
+
+### CORE
+ * [fix jdk version](https://jira.vptech.eu/browse/FCAN-1847)
+
+
 Release 0.5.0
 --------------
 
