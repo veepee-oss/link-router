@@ -22,14 +22,18 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.ComposeView
 import com.veepee.routes.feature_a.FragmentALink
 import com.veepee.routes.feature_b.FeatureBComposableLink
 import com.veepee.routes.router
-import com.veepee.vpcore.route.link.compose.ComposableFor
 import com.veepee.vpcore.route.link.compose.LinkRouterContainer
+import com.veepee.vpcore.route.link.compose.ComposableFor
 
 class AActivity : AppCompatActivity(R.layout.a_activity) {
 
@@ -54,21 +58,25 @@ class AActivity : AppCompatActivity(R.layout.a_activity) {
 
 @Composable
 private fun ARootComposition(modifier: Modifier = Modifier) {
-
+    var text by remember { mutableStateOf("2 - AActivity sent this text to a Composable in B Module") }
     LinkRouterContainer(router = router) {
         Column {
             ComposableFor(
-                FeatureBComposableLink("1 - AActivity sent this text to a Composable in B Module"),
-                modifier
+                link = FeatureBComposableLink("1 - AActivity sent this text to a Composable in B Module"),
+                modifier = modifier
                     .fillMaxWidth()
                     .background(Color.Yellow)
-            )
+            ) {
+                text = it.messageSize.toString()
+            }
             ComposableFor(
-                FeatureBComposableLink("2 - AActivity sent this text to a Composable in B Module"),
-                modifier
+                link = FeatureBComposableLink(text),
+                modifier = modifier
                     .fillMaxWidth()
                     .background(Color.Green)
-            )
+            ) {
+                text = it.messageSize.toString()
+            }
         }
     }
 }

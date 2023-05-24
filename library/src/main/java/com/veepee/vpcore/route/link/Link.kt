@@ -30,6 +30,11 @@ interface Link {
 interface Parameter
 
 /**
+ * Extra information passed from a destination to the caller.
+ * */
+interface Event
+
+/**
  * Basic representation of a destination parameter to Activities and Fragments.
  * We require it to implement Parcelable as a way of having a standard serialization method
  * */

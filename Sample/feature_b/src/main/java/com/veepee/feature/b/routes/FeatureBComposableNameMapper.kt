@@ -16,13 +16,16 @@
 
 package com.veepee.feature.b.routes
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.text.BasicText
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.veepee.routes.feature_b.ComposableBNames
+import com.veepee.routes.feature_b.FeatureBComposableEvent
 import com.veepee.routes.feature_b.FeatureBComposableLink
 import com.veepee.vpcore.route.link.compose.ComposableLink
 import com.veepee.vpcore.route.link.compose.ComposableNameMapper
+import com.veepee.vpcore.route.link.compose.events.LocalLinkRouterEventHandler
 
 object FeatureBComposableNameMapper : ComposableNameMapper<ComposableBNames> {
 
@@ -33,8 +36,13 @@ object FeatureBComposableNameMapper : ComposableNameMapper<ComposableBNames> {
         composableLink: ComposableLink<ComposableBNames>,
         modifier: Modifier
     ) {
+        val handler = LocalLinkRouterEventHandler.current
         when (composableLink) {
-            is FeatureBComposableLink -> BasicText(composableLink.parameter.message, modifier)
+            is FeatureBComposableLink -> BasicText(
+                composableLink.parameter.message,
+                modifier.clickable {
+                    handler.publish(FeatureBComposableEvent(composableLink.parameter.message.length))
+                })
         }
     }
 }
