@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Release 0.5.0
+--------------
+
+### CORE
+ * [Enable composables communication](https://jira.vptech.eu/browse/FCAN-1841)
+
+
 Release 0.4.0
 --------------
 
