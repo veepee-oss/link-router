@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Release 0.5.2
+--------------
+
+### CORE
+ * [ComposableFor methods now do a better job restricting implementations](https://jira.vptech.eu/browse/FCAN-1853)
+
+
 Release 0.5.1
 --------------
 
