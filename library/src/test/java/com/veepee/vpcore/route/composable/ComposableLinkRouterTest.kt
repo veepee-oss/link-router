@@ -23,6 +23,7 @@ import com.veepee.vpcore.route.composable.feature.TestComposablesNameMapper
 import com.veepee.vpcore.route.composable.route.TestComposableALink
 import com.veepee.vpcore.route.composable.route.TestComposableBLink
 import com.veepee.vpcore.route.composable.route.TestComposableBParameter
+import com.veepee.vpcore.route.link.compose.ComposableEvent
 import com.veepee.vpcore.route.link.compose.ComposableFor
 import com.veepee.vpcore.route.link.compose.ComposableLink
 import com.veepee.vpcore.route.link.compose.ComposableLinkRouterContainer
@@ -113,10 +114,10 @@ class ComposableLinkRouterTest {
             mappers,
             ChainFactoryImpl(listOf(object : ComposableLinkInterceptor {
                 override fun intercept(
-                    chain: Chain<ComposableNameMapper<out ComposableName>, ComposableLink<ComposableName>>,
+                    chain: Chain<ComposableNameMapper<out ComposableName>, ComposableLink<ComposableName, ComposableEvent>>,
                     mapper: ComposableNameMapper<out ComposableName>,
-                    link: ComposableLink<ComposableName>
-                ): ComposableLink<ComposableName> {
+                    link: ComposableLink<ComposableName, ComposableEvent>
+                ): ComposableLink<ComposableName, ComposableEvent> {
                     if (link is TestComposableBLink) {
                         return TestComposableALink()
                     }

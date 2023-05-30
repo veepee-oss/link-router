@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import com.veepee.routes.feature_b.ComposableBNames
 import com.veepee.routes.feature_b.FeatureBComposableEvent
 import com.veepee.routes.feature_b.FeatureBComposableLink
+import com.veepee.vpcore.route.link.compose.ComposableEvent
 import com.veepee.vpcore.route.link.compose.ComposableLink
 import com.veepee.vpcore.route.link.compose.ComposableNameMapper
 import com.veepee.vpcore.route.link.compose.events.LocalLinkRouterEventHandler
@@ -33,15 +34,15 @@ object FeatureBComposableNameMapper : ComposableNameMapper<ComposableBNames> {
 
     @Composable
     override fun Map(
-        composableLink: ComposableLink<ComposableBNames>,
+        link: ComposableLink<ComposableBNames, ComposableEvent>,
         modifier: Modifier
     ) {
         val handler = LocalLinkRouterEventHandler.current
-        when (composableLink) {
+        when (link) {
             is FeatureBComposableLink -> BasicText(
-                composableLink.parameter.message,
+                link.parameter.message,
                 modifier.clickable {
-                    handler.publish(FeatureBComposableEvent(composableLink.parameter.message.length))
+                    handler.publish(FeatureBComposableEvent(link.parameter.message.length))
                 })
         }
     }
