@@ -15,10 +15,11 @@
  */
 package com.veepee.vpcore.route.link.compose.chain
 
+import com.veepee.vpcore.route.link.compose.ComposableEvent
 import com.veepee.vpcore.route.link.compose.ComposableLink
 import com.veepee.vpcore.route.link.compose.ComposableName
 import com.veepee.vpcore.route.link.compose.ComposableNameMapper
 import com.veepee.vpcore.route.link.interceptor.LinkInterceptor
 
 interface ComposableLinkInterceptor :
-    LinkInterceptor<ComposableNameMapper<out ComposableName>, ComposableLink<ComposableName>>
+    LinkInterceptor<ComposableNameMapper<out ComposableName>, ComposableLink<ComposableName, out ComposableEvent>>

@@ -56,17 +56,20 @@ fun ComposableLinkRouterContainer(
 }
 
 @Composable
-fun ComposableFor(link: ComposableLink<ComposableName>, modifier: Modifier = Modifier) {
-    LocalComposableLinkRouter.current.ComposeFor(composableLink = link, modifier)
+fun ComposableFor(link: ComposableLink<ComposableName, NoComposableEvent>, modifier: Modifier = Modifier) {
+    ComposableFor(link = link, modifier) {}
 }
 
 @Composable
 inline fun <reified Event : ComposableEvent> ComposableFor(
-    link: ComposableLinkWithEvent<ComposableName, Event>,
+    link: ComposableLink<ComposableName, Event>,
     modifier: Modifier = Modifier,
     noinline onEvent: (Event) -> Unit
 ) {
-    LinkRouterEventHandlerContainer(onEvent = onEvent) {
-        ComposableFor(link = link, modifier = modifier)
-    }
+    LinkRouterEventHandlerContainer(
+        onEvent = onEvent,
+        content = {
+            LocalComposableLinkRouter.current.ComposeFor(link = link, modifier)
+        }
+    )
 }

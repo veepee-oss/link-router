@@ -16,7 +16,7 @@
 package com.veepee.routes.feature_b
 
 import com.veepee.vpcore.route.link.compose.ComposableEvent
-import com.veepee.vpcore.route.link.compose.ComposableLinkWithEvent
+import com.veepee.vpcore.route.link.compose.ComposableLink
 import com.veepee.vpcore.route.link.compose.ComposableName
 import com.veepee.vpcore.route.link.compose.ComposableParameter
 
@@ -26,7 +26,7 @@ enum class ComposableBNames : ComposableName {
 
 data class FeatureBComposableLink(
     override val parameter: FeatureBComposableParameter
-) : ComposableLinkWithEvent<ComposableBNames, FeatureBComposableEvent> {
+) : ComposableLink<ComposableBNames, FeatureBComposableEvent> {
     override val composableName: ComposableBNames = ComposableBNames.ComposableB
 
     constructor(message: String) : this(FeatureBComposableParameter(message))
