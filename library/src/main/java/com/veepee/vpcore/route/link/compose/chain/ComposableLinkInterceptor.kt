@@ -22,4 +22,4 @@ import com.veepee.vpcore.route.link.compose.ComposableNameMapper
 import com.veepee.vpcore.route.link.interceptor.LinkInterceptor
 
 interface ComposableLinkInterceptor :
-    LinkInterceptor<ComposableNameMapper<out ComposableName>, ComposableLink<ComposableName, out ComposableEvent>>
+    LinkInterceptor<ComposableNameMapper<out ComposableName>, ComposableLink<ComposableName, ComposableEvent>>

@@ -6,11 +6,10 @@ plugins {
 
 android {
     namespace "com.veepee.feature.login"
-
+    compileSdk 34
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 33
-        compileSdk 33
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"

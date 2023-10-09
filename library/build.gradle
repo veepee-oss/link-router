@@ -7,10 +7,10 @@ plugins {
 
 android {
     namespace = "com.veepee.vpcore.link.route"
+    compileSdk 34
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 33
-        compileSdk 33
         aarMetadata {
             minCompileSdk = 21
         }
@@ -37,7 +37,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.6'
+        kotlinCompilerExtensionVersion '1.5.3'
     }
 
     testOptions {
