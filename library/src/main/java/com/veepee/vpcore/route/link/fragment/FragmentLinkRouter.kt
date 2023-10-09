@@ -89,7 +89,7 @@ internal class FragmentLinkRouterImpl(
         if (newFragmentLink != fragmentLink) {
             return fragmentFor(newFragmentLink)
         }
-        val fragment = mapper.map(fragmentLink).newInstance()
+        val fragment = mapper.map(fragmentLink).getDeclaredConstructor().newInstance()
         return fragment.apply {
             arguments = Bundle().setLinkParameter(fragmentLink.parameter)
         }

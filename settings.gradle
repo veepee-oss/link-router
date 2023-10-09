@@ -5,10 +5,10 @@ include ':library'
 dependencyResolutionManagement {
     versionCatalogs {
         libs {
-            def kotlinVersion = version('koltin', "1.8.20")
+            def kotlinVersion = version('koltin', "1.9.10")
             library('lang.kotlin', 'org.jetbrains.kotlin', 'kotlin-stdlib').versionRef(kotlinVersion)
-            library('androidx.core', 'androidx.core', 'core').versionRef(version('core', '1.10.0'))
-            library('androidx.fragment', 'androidx.fragment', 'fragment').versionRef(version('fragment', '1.5.7'))
+            library('androidx.core', 'androidx.core', 'core').versionRef(version('core', '1.12.0'))
+            library('androidx.fragment', 'androidx.fragment', 'fragment').versionRef(version('fragment', '1.6.1'))
             library('material.components', 'com.google.android.material', 'material').versionRef(version('material', '1.8.0'))
             library('test.junit', 'junit', 'junit').versionRef(version('junit', '4.13.1'))
             library('test.androidx.test.core', 'androidx.test', 'core-ktx').versionRef(version('core-test', '1.5.0'))
@@ -16,7 +16,7 @@ dependencyResolutionManagement {
             library('test.mockito.inline', 'org.mockito', 'mockito-inline').versionRef(version('mockito-inline', '3.11.2'))
             library('test.mockito.kotlin', 'org.mockito.kotlin', 'mockito-kotlin').versionRef(version('mockito-kotlin', '3.2.0'))
 
-            def composeVersion = version('compose', '1.4.2')
+            def composeVersion = version('compose', '1.5.3')
             library('androidx.compose.foundation', 'androidx.compose.foundation', 'foundation').versionRef(composeVersion)
             library('androidx.compose.ui.test', 'androidx.compose.ui', 'ui-test-junit4').versionRef(composeVersion)
             library('androidx.compose.ui.test.manifest', 'androidx.compose.ui', 'ui-test-manifest').versionRef(composeVersion)

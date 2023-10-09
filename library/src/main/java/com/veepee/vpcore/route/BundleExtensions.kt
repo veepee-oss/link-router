@@ -18,41 +18,44 @@ package com.veepee.vpcore.route
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import androidx.core.content.IntentCompat
+import androidx.core.os.BundleCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleOwner
 import com.veepee.vpcore.route.link.Parameter
 import com.veepee.vpcore.route.link.ParcelableParameter
 
-internal val LINK_PARAMETER = "${Parameter::class.java.name}.LINK_PARAMETER"
-internal val LINK_PARAMETER_REQUEST_KEY = "${LINK_PARAMETER}_REQUEST_KEY"
+val LINK_PARAMETER = "${Parameter::class.java.name}.LINK_PARAMETER"
+val LINK_PARAMETER_REQUEST_KEY = "${LINK_PARAMETER}_REQUEST_KEY"
 
-fun <T : ParcelableParameter> Activity.requireLinkParameter(): T {
+inline fun <reified T : ParcelableParameter> Activity.requireLinkParameter(): T {
     return intent.requireLinkParameter()
 }
 
-fun <T : ParcelableParameter> Intent.requireLinkParameter(): T {
+inline fun <reified T : ParcelableParameter> Intent.requireLinkParameter(): T {
     return getLinkParameter()!!
 }
 
-fun <T : ParcelableParameter> Intent.getLinkParameter(): T? {
-    return getParcelableExtra(LINK_PARAMETER)
+inline fun <reified T : ParcelableParameter> Intent.getLinkParameter(): T? {
+    return IntentCompat.getParcelableExtra(this, LINK_PARAMETER, T::class.java)
 }
 
-fun <T : ParcelableParameter> Bundle.requireLinkParameter(): T {
+inline fun <reified T : ParcelableParameter> Bundle.requireLinkParameter(): T {
     return getLinkParameter()!!
 }
 
-fun <T : ParcelableParameter> Bundle.getLinkParameter(): T? {
-    return getParcelable(LINK_PARAMETER)
+inline fun <reified T : ParcelableParameter> Bundle.getLinkParameter(): T? {
+    return BundleCompat.getParcelable(this, LINK_PARAMETER, T::class.java)
 }
 
-fun <T : ParcelableParameter> Fragment.requireLinkParameter(): T {
+inline fun <reified T : ParcelableParameter> Fragment.requireLinkParameter(): T {
     return getLinkParameter()!!
 }
 
-fun <T : ParcelableParameter> Fragment.getLinkParameter(): T? {
-    return arguments?.getParcelable(LINK_PARAMETER)
+inline fun <reified T : ParcelableParameter> Fragment.getLinkParameter(): T? {
+    val args = arguments ?: return null
+    return BundleCompat.getParcelable(args, LINK_PARAMETER, T::class.java)
 }
 
 fun FragmentManager.setLinkParameterResult(
@@ -62,10 +65,10 @@ fun FragmentManager.setLinkParameterResult(
     setFragmentResult(requestKey, parameter.asBundle())
 }
 
-fun <T : ParcelableParameter> FragmentManager.setLinkParameterResultListener(
+inline fun <reified T : ParcelableParameter> FragmentManager.setLinkParameterResultListener(
     requestKey: String = LINK_PARAMETER_REQUEST_KEY,
     lifecycleOwner: LifecycleOwner,
-    listener: (T) -> Unit
+    crossinline listener: (T) -> Unit
 ) {
     setFragmentResultListener(
         requestKey,
