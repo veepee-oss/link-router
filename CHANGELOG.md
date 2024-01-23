@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Release 0.5.4
+--------------
+
+### CORE
+ * [setup veepee plugins in link-router](https://jira.vptech.eu/browse/FCAN-2348)
+
+
 Release 0.5.3
 --------------
 
