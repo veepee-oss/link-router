@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Release 0.5.5
+--------------
+
+### CORE
+ * [requires a priority for adding interceptors](https://jira.vptech.eu/browse/FCAN-2542)
+
+
 Release 0.5.4
 --------------
 
