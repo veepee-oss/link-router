@@ -26,7 +26,7 @@ interface ActivityLinkRouter {
     fun intentFor(context: Context, activityLink: ActivityLink<ActivityName>): Intent
 
     interface Builder {
-        fun add(activityLinkInterceptor: ActivityLinkInterceptor): Builder
+        fun add(priority: Int, activityLinkInterceptor: ActivityLinkInterceptor): Builder
         fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): Builder
         fun newBuilder(): Builder
         fun build(): ActivityLinkRouter
@@ -35,7 +35,7 @@ interface ActivityLinkRouter {
 
 class ActivityLinkRouterBuilder(
     private val activityNameMappersRegistry: MutableSet<ActivityNameMapper<out ActivityName>> = mutableSetOf(),
-    private val activityLinkInterceptorsRegistry: MutableList<ActivityLinkInterceptor> = mutableListOf()
+    private val activityLinkInterceptorsRegistry: MutableMap<Int, List<ActivityLinkInterceptor>> = mutableMapOf()
 ) : ActivityLinkRouter.Builder {
 
     override fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): ActivityLinkRouter.Builder {
@@ -43,22 +43,27 @@ class ActivityLinkRouterBuilder(
         return this
     }
 
-    override fun add(activityLinkInterceptor: ActivityLinkInterceptor): ActivityLinkRouter.Builder {
-        activityLinkInterceptorsRegistry.add(activityLinkInterceptor)
+    override fun add(priority: Int, activityLinkInterceptor: ActivityLinkInterceptor): ActivityLinkRouter.Builder {
+        val interceptors = activityLinkInterceptorsRegistry.getOrDefault(priority, emptyList())
+            .toMutableList()
+            .apply {
+                add(activityLinkInterceptor)
+            }
+        activityLinkInterceptorsRegistry[priority] = interceptors
         return this
     }
 
     override fun newBuilder(): ActivityLinkRouter.Builder {
         return ActivityLinkRouterBuilder(
             activityNameMappersRegistry.toMutableSet(),
-            activityLinkInterceptorsRegistry.toMutableList()
+            activityLinkInterceptorsRegistry.toMutableMap()
         )
     }
 
     override fun build(): ActivityLinkRouter {
         return ActivityLinkRouterImpl(
             activityNameMappersRegistry.toSet(),
-            ChainFactoryImpl(activityLinkInterceptorsRegistry.toList())
+            ChainFactoryImpl(activityLinkInterceptorsRegistry.toSortedMap().values.flatten())
         )
     }
 }

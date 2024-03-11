@@ -26,7 +26,7 @@ interface DeepLinkRouter {
 
     interface Builder {
         fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): Builder
-        fun add(deepLinkInterceptor: DeepLinkInterceptor): Builder
+        fun add(priority: Int, deepLinkInterceptor: DeepLinkInterceptor): Builder
         fun newBuilder(): Builder
         fun build(activityLinkRouter: ActivityLinkRouter): DeepLinkRouter
         fun setStackBuilderFactory(stackBuilderFactory: StackBuilderFactory): Builder
@@ -35,7 +35,7 @@ interface DeepLinkRouter {
 
 class DeepLinkRouterBuilder(
     private val deepLinkMappersRegistry: MutableSet<DeepLinkMapper<out DeepLink>> = mutableSetOf(),
-    private val deepLinkInterceptorsRegistry: MutableList<DeepLinkInterceptor> = mutableListOf()
+    private val deepLinkInterceptorsRegistry: MutableMap<Int, List<DeepLinkInterceptor>> = mutableMapOf()
 ) : DeepLinkRouter.Builder {
     private var stackBuilderFactory: StackBuilderFactory = StackBuilderFactoryImpl()
     override fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): DeepLinkRouter.Builder {
@@ -43,8 +43,11 @@ class DeepLinkRouterBuilder(
         return this
     }
 
-    override fun add(deepLinkInterceptor: DeepLinkInterceptor): DeepLinkRouter.Builder {
-        deepLinkInterceptorsRegistry.add(deepLinkInterceptor)
+    override fun add(priority: Int, deepLinkInterceptor: DeepLinkInterceptor): DeepLinkRouter.Builder {
+        val interceptors = deepLinkInterceptorsRegistry.getOrDefault(priority, emptyList())
+            .toMutableList()
+            .apply { add(deepLinkInterceptor) }
+        deepLinkInterceptorsRegistry[priority] = interceptors
         return this
     }
 
@@ -56,7 +59,7 @@ class DeepLinkRouterBuilder(
     override fun newBuilder(): DeepLinkRouter.Builder {
         return DeepLinkRouterBuilder(
             deepLinkMappersRegistry.toMutableSet(),
-            deepLinkInterceptorsRegistry.toMutableList()
+            deepLinkInterceptorsRegistry.toMutableMap()
         )
     }
 
@@ -65,7 +68,7 @@ class DeepLinkRouterBuilder(
             initialDeepLinkMappers = deepLinkMappersRegistry.toSet(),
             activityLinkRouter = activityLinkRouter,
             stackBuilderFactory = stackBuilderFactory,
-            chainFactory = ChainFactoryImpl(deepLinkInterceptorsRegistry.toList())
+            chainFactory = ChainFactoryImpl(deepLinkInterceptorsRegistry.toSortedMap().values.flatten())
         )
     }
 }
