@@ -30,8 +30,8 @@ interface ComposableLinkRouter {
     fun ComposeFor(link: ComposableLink<ComposableName, ComposableEvent>)
 
     interface Builder {
-        fun add(composableLinkInterceptor: ComposableLinkInterceptor): Builder
         fun add(composableNameMapper: ComposableNameMapper<out ComposableName>): Builder
+        fun add(priority: Int, composableLinkInterceptor: ComposableLinkInterceptor): Builder
         fun newBuilder(): Builder
         fun build(): ComposableLinkRouter
     }
@@ -39,11 +39,19 @@ interface ComposableLinkRouter {
 
 class ComposeLinkRouterBuilder(
     private val composableNameMappersRegistry: MutableSet<ComposableNameMapper<out ComposableName>> = mutableSetOf(),
-    private val composableLinkInterceptorsRegistry: MutableList<ComposableLinkInterceptor> = mutableListOf()
+    private val composableLinkInterceptorsRegistry: MutableMap<Int, List<ComposableLinkInterceptor>> = mutableMapOf()
 ) : ComposableLinkRouter.Builder {
 
-    override fun add(composableLinkInterceptor: ComposableLinkInterceptor): ComposableLinkRouter.Builder {
-        composableLinkInterceptorsRegistry.add(composableLinkInterceptor)
+    override fun add(
+        priority: Int,
+        composableLinkInterceptor: ComposableLinkInterceptor
+    ): ComposableLinkRouter.Builder {
+        val interceptors = composableLinkInterceptorsRegistry.getOrDefault(priority, emptyList())
+            .toMutableList()
+            .apply {
+                add(composableLinkInterceptor)
+            }
+        composableLinkInterceptorsRegistry[priority] = interceptors
         return this
     }
 
@@ -55,14 +63,14 @@ class ComposeLinkRouterBuilder(
     override fun newBuilder(): ComposableLinkRouter.Builder {
         return ComposeLinkRouterBuilder(
             composableNameMappersRegistry.toMutableSet(),
-            composableLinkInterceptorsRegistry.toMutableList()
+            composableLinkInterceptorsRegistry.toMutableMap()
         )
     }
 
     override fun build(): ComposableLinkRouter {
         return ComposableLinkRouterImpl(
             composableNameMappersRegistry.toSet(),
-            ChainFactoryImpl(composableLinkInterceptorsRegistry.toList())
+            ChainFactoryImpl(composableLinkInterceptorsRegistry.toSortedMap().values.flatten())
         )
     }
 }

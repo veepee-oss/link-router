@@ -23,6 +23,7 @@ import com.veepee.vpcore.route.activity.route.TestActivityALink
 import com.veepee.vpcore.route.activity.route.TestActivityBLink
 import com.veepee.vpcore.route.activity.route.TestActivityBParameter
 import com.veepee.vpcore.route.link.activity.ActivityLink
+import com.veepee.vpcore.route.link.activity.ActivityLinkRouterBuilder
 import com.veepee.vpcore.route.link.activity.ActivityLinkRouterImpl
 import com.veepee.vpcore.route.link.activity.ActivityName
 import com.veepee.vpcore.route.link.activity.ActivityNameMapper
@@ -35,6 +36,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 
@@ -43,6 +46,47 @@ class ActivityLinkRouterTest {
 
     private val mappers = setOf<ActivityNameMapper<out ActivityName>>(TestActivityNameMapper)
     private val activityBParameter = TestActivityBParameter("id")
+
+    @Test
+    fun `interceptors priority matters, not the order of addition`() {
+        val highPriority = 0
+        val lowPriority = 10
+        val router = ActivityLinkRouterBuilder()
+            .add(TestActivityNameMapper)
+            .add(lowPriority, object : ActivityLinkInterceptor {
+                override fun intercept(
+                    chain: Chain<ActivityNameMapper<out ActivityName>, ActivityLink<ActivityName>>,
+                    mapper: ActivityNameMapper<out ActivityName>,
+                    link: ActivityLink<ActivityName>
+                ): ActivityLink<ActivityName> {
+                    return TestActivityALink
+                }
+            })
+            .add(highPriority, object : ActivityLinkInterceptor {
+                override fun intercept(
+                    chain: Chain<ActivityNameMapper<out ActivityName>, ActivityLink<ActivityName>>,
+                    mapper: ActivityNameMapper<out ActivityName>,
+                    link: ActivityLink<ActivityName>
+                ): ActivityLink<ActivityName> {
+                    return TestActivityBLink(TestActivityBParameter("id"))
+                }
+            })
+            .build()
+        val activity: Activity = mock()
+        val intent = router.intentFor(activity, TestActivityALink)
+        assertEquals(intent.component!!.className, TestActivityB::class.java.name)
+    }
+
+    @Test
+    fun `should intercept activity link`() {
+        val activity: Activity = mock()
+        val interceptor: ActivityLinkInterceptor = mock {
+            given { it.intercept(any(), any(), any()) }.willReturn(TestActivityBLink(TestActivityBParameter("id")))
+        }
+        val router = ActivityLinkRouterImpl(mappers, ChainFactoryImpl(listOf(interceptor)))
+        val intent = router.intentFor(activity, TestActivityALink)
+        assertEquals(intent.component!!.className, TestActivityB::class.java.name)
+    }
 
     @Test
     fun `should return intent for registered ActivityNameMappers`() {
