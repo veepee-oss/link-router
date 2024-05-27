@@ -51,6 +51,8 @@ build:
     - echo "$TOOLS_PROPERTIES" > tools.properties
     - echo "$TOOLS_SLACK_PROPERTIES" > slack.properties
     - echo "$TOOLS_CONFLUENCE_PROPERTIES" > confluence.properties
+    - echo "$TOOLS_GOOGLE_WORKSPACE_PROPERTIES" > googleWorkspace.properties
+    - echo "$GOOGLE_WORKSPACE_SERVICE_ACCOUNT_KEY" > $GOOGLE_WORKSPACE_SERVICE_ACCOUNT_KEY_FILE
     - wget -O tools.jar $TOOLS_JAR_URL
   tags:
     - docker
