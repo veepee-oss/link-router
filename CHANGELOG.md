@@ -1,6 +1,14 @@
 Change Log
 ==========
 
+Release 0.5.6
+--------------
+
+### CORE
+ * [Add google props](https://jira.vptech.eu/browse/FCAN-2880)
+ * [Fix UriDeepLink and update libraries](https://jira.vptech.eu/browse/FCAN-3055)
+
+
 Release 0.5.5
 --------------
 
