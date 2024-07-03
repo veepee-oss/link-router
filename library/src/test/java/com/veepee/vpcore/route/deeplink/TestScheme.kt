@@ -16,7 +16,9 @@
 package com.veepee.vpcore.route.deeplink
 
 import com.veepee.vpcore.route.link.deeplink.Scheme
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 enum class TestScheme(override val value: String) : Scheme {
     MyScheme("myscheme")
 }

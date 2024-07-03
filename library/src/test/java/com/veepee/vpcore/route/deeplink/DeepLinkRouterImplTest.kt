@@ -33,6 +33,7 @@ import com.veepee.vpcore.route.link.deeplink.StackBuilder
 import com.veepee.vpcore.route.link.deeplink.StackBuilderFactory
 import com.veepee.vpcore.route.link.deeplink.StackBuilderImpl
 import com.veepee.vpcore.route.link.deeplink.UriDeepLink
+import com.veepee.vpcore.route.link.deeplink.UriParameter
 import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.Chain
 import com.veepee.vpcore.route.link.interceptor.ChainFactory
@@ -103,7 +104,7 @@ class DeepLinkRouterImplTest {
 
     @Test
     fun `should fail to route due missing mapper`() {
-        GlobalRouterBuilder.newBuilder().setStackBuilderFactory{
+        GlobalRouterBuilder.newBuilder().setStackBuilderFactory {
             StackBuilderImpl(it)
         }.build()
         val router = DeepLinkRouterImpl(
@@ -127,8 +128,10 @@ class DeepLinkRouterImplTest {
                 link: DeepLink
             ): DeepLink {
                 if (link.authority == "www.bing.com") {
-                    return UriDeepLink(Uri.parse("myscheme://www.google.com"))
-                    { TestScheme.MyScheme }
+                    return UriDeepLink(
+                        UriParameter(Uri.parse("myscheme://www.google.com")),
+                        TestScheme.MyScheme
+                    )
                 }
                 return chain.next(mapper, link)
             }
@@ -142,8 +145,13 @@ class DeepLinkRouterImplTest {
             chainFactory
         )
 
-        router.route(context, UriDeepLink(Uri.parse("myscheme://www.bing.com"))
-        { TestScheme.MyScheme })
+        router.route(
+            context,
+            UriDeepLink(
+                UriParameter(Uri.parse("myscheme://www.bing.com")),
+                TestScheme.MyScheme
+            )
+        )
 
         verify(stackBuilderFactory, times(1)).create(context)
         verify(stackBuilder, times(1)).addNextIntent(intentA)

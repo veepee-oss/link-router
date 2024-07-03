@@ -6,5 +6,4 @@ plugins {
     alias(libs.plugins.detekt) apply false
     alias(libs.plugins.veepee.version.manager)
     alias(libs.plugins.veepee.code.style)
-    alias(libs.plugins.veepee.jacoco)
 }

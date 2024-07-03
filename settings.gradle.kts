@@ -1,20 +1,24 @@
 pluginManagement {
+   // includeBuild("../gradle-plugins")
+   // includeBuild("../gradle-plugins/settings")
     repositories {
-        google()
-        mavenLocal()
-        mavenCentral()
+
         gradlePluginPortal()
         maven { url = uri("https://registry.vptech.eu/artifactory/offer-discovery-android-maven/") }
     }
 }
 dependencyResolutionManagement {
-    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
-        mavenCentral()
         maven { url = uri("https://registry.vptech.eu/artifactory/offer-discovery-android-maven/") }
     }
 }
 
 rootProject.name = "Link-Router"
 include(":library")
+
+plugins {
+    /**
+     * NOTE: Gradle does not allow the usage of version catalogs inside settings.gradle.kts.
+     * */
+    id("com.veepee.settings") version "0.4.1"
+}
