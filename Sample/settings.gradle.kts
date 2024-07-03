@@ -1,31 +1,17 @@
 rootProject.name = "sample"
 pluginManagement {
+   // includeBuild("../../gradle-plugins")
+   // includeBuild("../../gradle-plugins/settings")
     repositories {
-        google()
-        mavenLocal()
-        mavenCentral()
         gradlePluginPortal()
         maven { url = uri("https://registry.vptech.eu/artifactory/offer-discovery-android-maven/") }
     }
-    resolutionStrategy {
-        eachPlugin {
-            if (requested.id.id == "shot") {
-                useModule("com.karumi:shot:${requested.version}")
-            }
-        }
-    }
-
 }
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
-        google()
-        mavenLocal()
-        mavenCentral()
         maven { url = uri("https://registry.vptech.eu/artifactory/offer-discovery-android-maven/") }
-        // detekt gitlab integration
-        maven { url = uri("https://gitlab.com/api/v4/projects/25796063/packages/maven") }
     }
     versionCatalogs {
         create("libs") {
@@ -43,4 +29,12 @@ includeBuild("../") {
     dependencySubstitution {
         substitute(module("com.veepee.vpcore.link-router:link-router")).using(project(":library"))
     }
+}
+
+
+plugins {
+    /**
+     * NOTE: Gradle does not allow the usage of version catalogs inside settings.gradle.kts.
+     * */
+    id("com.veepee.settings") version "0.4.1"
 }

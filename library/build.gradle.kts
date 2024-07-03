@@ -23,7 +23,7 @@ dependencies {
     testImplementation(libs.test.robolectric)
     testImplementation(libs.test.support.core)
     testImplementation(libs.test.compose)
-    testImplementation("org.mockito.kotlin:mockito-kotlin:5.2.1")
+    testImplementation(libs.mockito.kotlin)
 
 }
 
