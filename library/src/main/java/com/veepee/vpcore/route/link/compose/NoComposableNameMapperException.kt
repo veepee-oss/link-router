@@ -15,5 +15,5 @@
  */
 package com.veepee.vpcore.route.link.compose
 
-internal class NoComposableNameMapperException(composableLink: ComposableLink<ComposableName>) :
+internal class NoComposableNameMapperException(composableLink: ComposableLink<ComposableName, ComposableEvent>) :
     IllegalArgumentException("$composableLink has no registered ComposableNameMapper registered for it.")

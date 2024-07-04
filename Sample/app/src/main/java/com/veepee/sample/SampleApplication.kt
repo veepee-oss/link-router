@@ -47,9 +47,9 @@ class SampleApplication : Application() {
             add(FeatureADeepLinkMapper)
             add(LoginDeepLinkMapper)
 
-            add(DeepLinkAuthenticationInterceptor)
-            add(ActivityLinkAuthenticationInterceptor)
-            add(FragmentLinkAuthenticationInterceptor)
+            add(0, DeepLinkAuthenticationInterceptor)
+            add(0, ActivityLinkAuthenticationInterceptor)
+            add(0, FragmentLinkAuthenticationInterceptor)
             add(FeatureBComposableNameMapper)
         }
     }

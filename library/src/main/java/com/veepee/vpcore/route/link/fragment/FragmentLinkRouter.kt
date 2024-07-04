@@ -29,7 +29,7 @@ interface FragmentLinkRouter {
 
     interface Builder {
         fun add(fragmentNameMapper: FragmentNameMapper<out FragmentName>): Builder
-        fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): Builder
+        fun add(priority: Int, fragmentLinkInterceptor: FragmentLinkInterceptor): Builder
         fun newBuilder(): Builder
         fun build(): FragmentLinkRouter
     }
@@ -37,12 +37,17 @@ interface FragmentLinkRouter {
 
 class FragmentLinkRouterBuilder(
     private val fragmentNameMappersRegistry: MutableSet<FragmentNameMapper<out FragmentName>> = mutableSetOf(),
-    private val fragmentLinkInterceptorsRegistry: MutableList<FragmentLinkInterceptor> = mutableListOf()
+    private val fragmentLinkInterceptorsRegistry: MutableMap<Int, List<FragmentLinkInterceptor>> = mutableMapOf()
 
 ) : FragmentLinkRouter.Builder {
 
-    override fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): FragmentLinkRouter.Builder {
-        fragmentLinkInterceptorsRegistry.add(fragmentLinkInterceptor)
+    override fun add(priority: Int, fragmentLinkInterceptor: FragmentLinkInterceptor): FragmentLinkRouter.Builder {
+        val interceptors = fragmentLinkInterceptorsRegistry.getOrDefault(priority, emptyList())
+            .toMutableList()
+            .apply {
+                add(fragmentLinkInterceptor)
+            }
+        fragmentLinkInterceptorsRegistry[priority] = interceptors
         return this
     }
 
@@ -54,14 +59,14 @@ class FragmentLinkRouterBuilder(
     override fun newBuilder(): FragmentLinkRouter.Builder {
         return FragmentLinkRouterBuilder(
             fragmentNameMappersRegistry.toMutableSet(),
-            fragmentLinkInterceptorsRegistry.toMutableList()
+            fragmentLinkInterceptorsRegistry.toMutableMap()
         )
     }
 
     override fun build(): FragmentLinkRouter {
         return FragmentLinkRouterImpl(
             fragmentNameMappersRegistry.toSet(),
-            ChainFactoryImpl(fragmentLinkInterceptorsRegistry.toList())
+            ChainFactoryImpl(fragmentLinkInterceptorsRegistry.toSortedMap().values.flatten())
         )
     }
 }
@@ -89,7 +94,7 @@ internal class FragmentLinkRouterImpl(
         if (newFragmentLink != fragmentLink) {
             return fragmentFor(newFragmentLink)
         }
-        val fragment = mapper.map(fragmentLink).newInstance()
+        val fragment = mapper.map(fragmentLink).getDeclaredConstructor().newInstance()
         return fragment.apply {
             arguments = Bundle().setLinkParameter(fragmentLink.parameter)
         }

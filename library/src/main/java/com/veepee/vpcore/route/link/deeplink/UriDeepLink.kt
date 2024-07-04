@@ -23,20 +23,12 @@ import kotlinx.parcelize.Parcelize
 @Parcelize
 data class UriDeepLink(
     override val parameter: UriParameter,
-    private val schemeFactory: (scheme: String) -> Scheme
+    override val scheme: Scheme
 ) : DeepLink {
-    constructor(
-        uri: Uri,
-        schemeFactory: (scheme: String) -> Scheme
-    ) : this(UriParameter(uri), schemeFactory)
 
-    constructor(
-        url: String,
-        schemeFactory: (scheme: String) -> Scheme
-    ) : this(Uri.parse(url), schemeFactory)
+    constructor(uri: Uri, scheme: Scheme) : this(UriParameter(uri), scheme)
 
-    @IgnoredOnParcel
-    override val scheme: Scheme = schemeFactory(parameter.uri.scheme!!)
+    constructor(url: String, scheme: Scheme) : this(UriParameter(Uri.parse(url)), scheme)
 
     @IgnoredOnParcel
     override val authority: String = parameter.uri.authority!!
@@ -60,8 +52,8 @@ data class UriParameter(val uri: Uri) : ParcelableParameter {
     val pathSegments: List<String> = uri.pathSegments ?: emptyList()
 
     private fun Uri.queryMap(): Map<String, String> {
-        return queryParameterNames.map { queryParameter ->
-            queryParameter to getQueryParameter(queryParameter)!!
-        }.toMap()
+        return queryParameterNames.associateWith { queryParameter ->
+            getQueryParameter(queryParameter)!!
+        }
     }
 }

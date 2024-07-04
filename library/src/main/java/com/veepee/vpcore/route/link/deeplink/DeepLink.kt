@@ -23,6 +23,6 @@ interface DeepLink : Link, Parcelable {
     val authority: String
 }
 
-interface Scheme {
+interface Scheme : Parcelable {
     val value: String
 }
