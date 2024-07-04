@@ -1,6 +1,7 @@
 plugins {
-    id 'com.android.library'
-    id 'kotlin-android'
+    alias(libs.plugins.android.library)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -8,8 +9,8 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 33
-        compileSdk 33
+        targetSdkVersion 34
+        compileSdk 34
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
@@ -22,29 +23,21 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
-    }
-    buildFeatures {
-        compose true
+        jvmTarget = '17'
     }
 
-    composeOptions {
-        kotlinCompilerExtensionVersion '1.4.6'
+    buildFeatures {
+        compose true
     }
 }
 
 
 dependencies {
-    implementation libs.lang.kotlin
-    implementation libs.androidx.core
-    implementation libs.androidx.appcompat
-    implementation libs.material
-    implementation libs.androidx.constraint.layout
-    implementation libs.androidx.fragment
     implementation project(":routes")
-    implementation libs.androidx.compose.foundation
+    implementation(libs.androidx.compose.foundation)
+    implementation(libs.androidx.appcompat)
 }

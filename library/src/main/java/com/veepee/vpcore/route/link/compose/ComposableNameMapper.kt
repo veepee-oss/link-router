@@ -22,5 +22,5 @@ interface ComposableNameMapper<T : ComposableName> {
     val supportedNames: Array<T>
 
     @Composable
-    fun Map(composableLink: ComposableLink<T>, modifier: Modifier)
+    fun Map(link: ComposableLink<T, ComposableEvent>, modifier: Modifier)
 }

@@ -16,12 +16,12 @@
 package com.veepee.vpcore.route.composable.route
 
 import com.veepee.vpcore.route.link.compose.ComposableEvent
-import com.veepee.vpcore.route.link.compose.ComposableLinkWithEvent
+import com.veepee.vpcore.route.link.compose.ComposableLink
 import com.veepee.vpcore.route.link.compose.ComposableParameter
 
 class TestComposableBLink(
     override val parameter: TestComposableBParameter
-) : ComposableLinkWithEvent<TestComposableName, TestComposableBLinkEvent> {
+) : ComposableLink<TestComposableName, TestComposableBLinkEvent> {
     override val composableName: TestComposableName = TestComposableName.TestComposableB
 }
 

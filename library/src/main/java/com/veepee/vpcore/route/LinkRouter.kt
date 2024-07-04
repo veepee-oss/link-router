@@ -49,16 +49,16 @@ interface LinkRouter :
 
     interface Builder {
         fun add(activityNameMapper: ActivityNameMapper<out ActivityName>): Builder
-        fun add(activityLinkInterceptor: ActivityLinkInterceptor): Builder
+        fun add(priority : Int, activityLinkInterceptor: ActivityLinkInterceptor): Builder
 
         fun add(fragmentNameMapper: FragmentNameMapper<out FragmentName>): Builder
-        fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): Builder
+        fun add(priority : Int, fragmentLinkInterceptor: FragmentLinkInterceptor): Builder
 
         fun add(deepLinkMapper: DeepLinkMapper<out DeepLink>): Builder
-        fun add(deepLinkInterceptor: DeepLinkInterceptor): Builder
+        fun add(priority : Int, deepLinkInterceptor: DeepLinkInterceptor): Builder
 
-        fun add(composableLinkInterceptor: ComposableLinkInterceptor): Builder
         fun add(composableNameMapper: ComposableNameMapper<out ComposableName>): Builder
+        fun add(priority : Int, composableLinkInterceptor: ComposableLinkInterceptor): Builder
 
         fun newBuilder(): Builder
         fun build(): LinkRouter
@@ -97,8 +97,8 @@ class LinkRouterBuilder(
         return this
     }
 
-    override fun add(activityLinkInterceptor: ActivityLinkInterceptor): LinkRouter.Builder {
-        activityLinkRouterBuilder.add(activityLinkInterceptor)
+    override fun add(priority : Int, activityLinkInterceptor: ActivityLinkInterceptor): LinkRouter.Builder {
+        activityLinkRouterBuilder.add(priority, activityLinkInterceptor)
         return this
     }
 
@@ -107,8 +107,8 @@ class LinkRouterBuilder(
         return this
     }
 
-    override fun add(fragmentLinkInterceptor: FragmentLinkInterceptor): LinkRouter.Builder {
-        fragmentLinkRouterBuilder.add(fragmentLinkInterceptor)
+    override fun add(priority : Int, fragmentLinkInterceptor: FragmentLinkInterceptor): LinkRouter.Builder {
+        fragmentLinkRouterBuilder.add(priority, fragmentLinkInterceptor)
         return this
     }
 
@@ -117,8 +117,8 @@ class LinkRouterBuilder(
         return this
     }
 
-    override fun add(deepLinkInterceptor: DeepLinkInterceptor): LinkRouter.Builder {
-        deepLinkRouterBuilder.add(deepLinkInterceptor)
+    override fun add(priority : Int, deepLinkInterceptor: DeepLinkInterceptor): LinkRouter.Builder {
+        deepLinkRouterBuilder.add(priority, deepLinkInterceptor)
         return this
     }
 
@@ -127,8 +127,8 @@ class LinkRouterBuilder(
         return this
     }
 
-    override fun add(composableLinkInterceptor: ComposableLinkInterceptor): LinkRouter.Builder {
-        composableLinkRouterBuilder.add(composableLinkInterceptor)
+    override fun add(priority : Int, composableLinkInterceptor: ComposableLinkInterceptor): LinkRouter.Builder {
+        composableLinkRouterBuilder.add(priority, composableLinkInterceptor)
         return this
     }
 

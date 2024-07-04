@@ -24,14 +24,14 @@ import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 interface ComposableLinkRouter {
 
     @Composable
-    fun ComposeFor(composableLink: ComposableLink<ComposableName>, modifier: Modifier)
+    fun ComposeFor(link: ComposableLink<ComposableName, ComposableEvent>, modifier: Modifier)
 
     @Composable
-    fun ComposeFor(composableLink: ComposableLink<ComposableName>)
+    fun ComposeFor(link: ComposableLink<ComposableName, ComposableEvent>)
 
     interface Builder {
-        fun add(composableLinkInterceptor: ComposableLinkInterceptor): Builder
         fun add(composableNameMapper: ComposableNameMapper<out ComposableName>): Builder
+        fun add(priority: Int, composableLinkInterceptor: ComposableLinkInterceptor): Builder
         fun newBuilder(): Builder
         fun build(): ComposableLinkRouter
     }
@@ -39,11 +39,19 @@ interface ComposableLinkRouter {
 
 class ComposeLinkRouterBuilder(
     private val composableNameMappersRegistry: MutableSet<ComposableNameMapper<out ComposableName>> = mutableSetOf(),
-    private val composableLinkInterceptorsRegistry: MutableList<ComposableLinkInterceptor> = mutableListOf()
+    private val composableLinkInterceptorsRegistry: MutableMap<Int, List<ComposableLinkInterceptor>> = mutableMapOf()
 ) : ComposableLinkRouter.Builder {
 
-    override fun add(composableLinkInterceptor: ComposableLinkInterceptor): ComposableLinkRouter.Builder {
-        composableLinkInterceptorsRegistry.add(composableLinkInterceptor)
+    override fun add(
+        priority: Int,
+        composableLinkInterceptor: ComposableLinkInterceptor
+    ): ComposableLinkRouter.Builder {
+        val interceptors = composableLinkInterceptorsRegistry.getOrDefault(priority, emptyList())
+            .toMutableList()
+            .apply {
+                add(composableLinkInterceptor)
+            }
+        composableLinkInterceptorsRegistry[priority] = interceptors
         return this
     }
 
@@ -55,14 +63,14 @@ class ComposeLinkRouterBuilder(
     override fun newBuilder(): ComposableLinkRouter.Builder {
         return ComposeLinkRouterBuilder(
             composableNameMappersRegistry.toMutableSet(),
-            composableLinkInterceptorsRegistry.toMutableList()
+            composableLinkInterceptorsRegistry.toMutableMap()
         )
     }
 
     override fun build(): ComposableLinkRouter {
         return ComposableLinkRouterImpl(
             composableNameMappersRegistry.toSet(),
-            ChainFactoryImpl(composableLinkInterceptorsRegistry.toList())
+            ChainFactoryImpl(composableLinkInterceptorsRegistry.toSortedMap().values.flatten())
         )
     }
 }
@@ -70,7 +78,7 @@ class ComposeLinkRouterBuilder(
 @Suppress("UNCHECKED_CAST")
 internal class ComposableLinkRouterImpl(
     composableNameMappers: Set<ComposableNameMapper<out ComposableName>>,
-    private val chainFactory: ChainFactory<ComposableNameMapper<out ComposableName>, ComposableLink<ComposableName>>
+    private val chainFactory: ChainFactory<ComposableNameMapper<out ComposableName>, ComposableLink<ComposableName, ComposableEvent>>
 ) : ComposableLinkRouter {
 
     private val composableLinkMapper =
@@ -81,19 +89,19 @@ internal class ComposableLinkRouterImpl(
         }.toMap()
 
     @Composable
-    override fun ComposeFor(composableLink: ComposableLink<ComposableName>) {
-        ComposeFor(composableLink = composableLink, modifier = Modifier)
+    override fun ComposeFor(link: ComposableLink<ComposableName, ComposableEvent>) {
+        ComposeFor(link = link, modifier = Modifier)
     }
 
     @Composable
-    override fun ComposeFor(composableLink: ComposableLink<ComposableName>, modifier: Modifier) {
+    override fun ComposeFor(link: ComposableLink<ComposableName, ComposableEvent>, modifier: Modifier) {
         val chain = chainFactory.create()
-        val mapper = composableLinkMapper[composableLink.composableName]
-            ?: throw NoComposableNameMapperException(composableLink)
-        val newComposableLink = chain.next(mapper, composableLink)
-        if (newComposableLink != composableLink) {
+        val mapper = composableLinkMapper[link.composableName]
+            ?: throw NoComposableNameMapperException(link)
+        val newComposableLink = chain.next(mapper, link)
+        if (newComposableLink != link) {
             return ComposeFor(newComposableLink, modifier)
         }
-        mapper.Map(composableLink, modifier)
+        mapper.Map(link, modifier)
     }
 }
