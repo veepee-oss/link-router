@@ -36,5 +36,5 @@ plugins {
     /**
      * NOTE: Gradle does not allow the usage of version catalogs inside settings.gradle.kts.
      * */
-    id("com.veepee.settings") version "0.4.1"
+    id("com.veepee.settings") version "0.4.18"
 }
