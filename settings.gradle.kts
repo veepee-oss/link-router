@@ -1,8 +1,7 @@
 pluginManagement {
-   // includeBuild("../gradle-plugins")
-   // includeBuild("../gradle-plugins/settings")
+    // includeBuild("../gradle-plugins")
+    // includeBuild("../gradle-plugins/settings")
     repositories {
-
         gradlePluginPortal()
         maven { url = uri("https://registry.vptech.eu/artifactory/offer-discovery-android-maven/") }
     }
@@ -20,5 +19,5 @@ plugins {
     /**
      * NOTE: Gradle does not allow the usage of version catalogs inside settings.gradle.kts.
      * */
-    id("com.veepee.settings") version "0.4.1"
+    id("com.veepee.settings") version "0.4.18"
 }
