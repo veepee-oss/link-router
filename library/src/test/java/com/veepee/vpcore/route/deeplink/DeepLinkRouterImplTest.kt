@@ -38,44 +38,47 @@ import com.veepee.vpcore.route.link.deeplink.chain.DeepLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.Chain
 import com.veepee.vpcore.route.link.interceptor.ChainFactory
 import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.verify
-import io.mockk.verifyOrder
 import org.junit.Assert.assertThrows
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.inOrder
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class DeepLinkRouterImplTest {
-    private val chainFactory: ChainFactory<DeepLinkMapper<out DeepLink>, DeepLink> = mockk(relaxed = true)
-    private val chain: Chain<DeepLinkMapper<out DeepLink>, DeepLink> = mockk(relaxed = true)
-    private val activityLinkRouter: ActivityLinkRouter = mockk(relaxed = true)
-    private val stackBuilderFactory: StackBuilderFactory = mockk(relaxed = true)
-    private val stackBuilder: StackBuilder = mockk(relaxed = true)
-    private val context: Context = mockk(relaxed = true)
-    private val intentA: Intent = mockk(relaxed = true)
-    private val intentB: Intent = mockk(relaxed = true)
-    private val deepLink: DeepLink = mockk(relaxed = true)
+    private val chainFactory: ChainFactory<DeepLinkMapper<out DeepLink>, DeepLink> = mock()
+    private val chain: Chain<DeepLinkMapper<out DeepLink>, DeepLink> = mock()
+    private val activityLinkRouter: ActivityLinkRouter = mock()
+    private val stackBuilderFactory: StackBuilderFactory = mock()
+    private val stackBuilder: StackBuilder = mock()
+    private val context: Context = mock()
+    private val intentA: Intent = mock()
+    private val intentB: Intent = mock()
+    private val deepLink: DeepLink = mock()
 
     private val mappers: Set<DeepLinkMapper<DeepLink>> =
         setOf(GoogleUriDeepLinkMapper, BingUriDeepLinkMapper)
 
     @Before
     fun setup() {
-        every { stackBuilderFactory.create(any()) } returns stackBuilder
-        every { activityLinkRouter.intentFor(context, TestActivityALink) } returns intentA
-        every {
+        whenever(stackBuilderFactory.create(any())).thenReturn(stackBuilder)
+        whenever(activityLinkRouter.intentFor(context, TestActivityALink))
+            .thenReturn(intentA)
+        whenever(
             activityLinkRouter.intentFor(
                 context,
                 TestActivityBLink(TestActivityBParameter("www.google.com"))
             )
-        } returns intentB
+        ).thenReturn(intentB)
 
-        every { chainFactory.create() } returns chain
-        every { chain.next(any(), any()) } returns deepLink
+        whenever(chainFactory.create()).thenReturn(chain)
+        whenever(chain.next(any(), any())).thenReturn(deepLink)
     }
 
     @Test
@@ -87,16 +90,16 @@ class DeepLinkRouterImplTest {
             chainFactory = chainFactory
         )
 
-        every { deepLink.authority } returns "www.google.com"
-        every { deepLink.scheme } returns TestScheme.MyScheme
+        whenever(deepLink.authority).thenReturn("www.google.com")
+        whenever(deepLink.scheme).thenReturn(TestScheme.MyScheme)
 
         router.route(context, deepLink)
 
-        verifyOrder {
-            stackBuilder.addNextIntent(intentA)
-            stackBuilder.addNextIntent(intentB)
-            stackBuilder.startActivities()
-        }
+        val order = inOrder(stackBuilder)
+
+        order.verify(stackBuilder).addNextIntent(intentA)
+        order.verify(stackBuilder).addNextIntent(intentB)
+        order.verify(stackBuilder).startActivities()
     }
 
     @Test
@@ -150,9 +153,9 @@ class DeepLinkRouterImplTest {
             )
         )
 
-        verify(exactly = 1) { stackBuilderFactory.create(context) }
-        verify(exactly = 1) { stackBuilder.addNextIntent(intentA) }
-        verify(exactly = 1) { stackBuilder.addNextIntent(intentB) }
-        verify(exactly = 1) { stackBuilder.startActivities() }
+        verify(stackBuilderFactory, times(1)).create(context)
+        verify(stackBuilder, times(1)).addNextIntent(intentA)
+        verify(stackBuilder, times(1)).addNextIntent(intentB)
+        verify(stackBuilder, times(1)).startActivities()
     }
 }

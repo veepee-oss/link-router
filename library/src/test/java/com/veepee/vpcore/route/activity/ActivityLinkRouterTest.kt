@@ -32,12 +32,13 @@ import com.veepee.vpcore.route.link.activity.chain.ActivityLinkInterceptor
 import com.veepee.vpcore.route.link.interceptor.Chain
 import com.veepee.vpcore.route.link.interceptor.ChainFactoryImpl
 import com.veepee.vpcore.route.requireLinkParameter
-import io.mockk.every
-import io.mockk.mockk
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertThrows
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -71,18 +72,16 @@ class ActivityLinkRouterTest {
                 }
             })
             .build()
-        val activity = mockk<Activity>(relaxed = true)
+        val activity: Activity = mock()
         val intent = router.intentFor(activity, TestActivityALink)
         assertEquals(intent.component!!.className, TestActivityB::class.java.name)
     }
 
     @Test
     fun `should intercept activity link`() {
-        val activity: Activity = mockk(relaxed = true)
-        val interceptor: ActivityLinkInterceptor = mockk {
-            every { intercept(any(), any(), any()) } returns TestActivityBLink(
-                TestActivityBParameter("id")
-            )
+        val activity: Activity = mock()
+        val interceptor: ActivityLinkInterceptor = mock {
+            given { it.intercept(any(), any(), any()) }.willReturn(TestActivityBLink(TestActivityBParameter("id")))
         }
         val router = ActivityLinkRouterImpl(mappers, ChainFactoryImpl(listOf(interceptor)))
         val intent = router.intentFor(activity, TestActivityALink)
@@ -91,13 +90,14 @@ class ActivityLinkRouterTest {
 
     @Test
     fun `should return intent for registered ActivityNameMappers`() {
+
         assertIntentFor(TestActivityALink, TestActivityA::class.java)
         assertIntentFor(TestActivityBLink(activityBParameter), TestActivityB::class.java)
     }
 
     @Test
     fun `should retrieve parameter from intent`() {
-        val activity: Activity = mockk(relaxed = true)
+        val activity: Activity = mock()
         val router = ActivityLinkRouterImpl(mappers, ChainFactoryImpl(emptyList()))
         val intent = router.intentFor(activity, TestActivityBLink(activityBParameter))
         val parameter = intent.requireLinkParameter<TestActivityBParameter>()
@@ -109,7 +109,7 @@ class ActivityLinkRouterTest {
 
         val router = ActivityLinkRouterImpl(emptySet(), ChainFactoryImpl(emptyList()))
 
-        val activity: Activity = mockk()
+        val activity: Activity = mock()
         assertThrows(NoActivityNameMapperException::class.java) {
             router.intentFor(activity, TestActivityALink)
         }
@@ -130,7 +130,7 @@ class ActivityLinkRouterTest {
             }
         }
         val router = ActivityLinkRouterImpl(mappers, ChainFactoryImpl(listOf(interceptor)))
-        val activity: Activity = mockk(relaxed = true)
+        val activity: Activity = mock()
         val intent = router.intentFor(activity, TestActivityALink)
         assertEquals(intent.component!!.className, TestActivityB::class.java.name)
     }
@@ -139,7 +139,7 @@ class ActivityLinkRouterTest {
         activityLink: ActivityLink<ActivityName>,
         clazz: Class<out Activity>
     ) {
-        val activity: Activity = mockk(relaxed = true)
+        val activity: Activity = mock()
         val router = ActivityLinkRouterImpl(mappers, ChainFactoryImpl(emptyList()))
         val intent = router.intentFor(activity, activityLink)
 
