@@ -52,18 +52,19 @@ android {
 }
 
 dependencies {
-    implementation libs.lang.kotlin
+    implementation(libs.lang.kotlin)
 
-    implementation libs.androidx.core
-    implementation libs.androidx.fragment
-    implementation libs.androidx.compose.foundation
+    implementation(libs.androidx.core)
+    implementation(libs.androidx.fragment)
+    implementation(libs.androidx.compose.foundation)
 
-    testImplementation libs.test.junit
-    testImplementation libs.test.robolectric
-    testImplementation libs.test.mockk
-    testImplementation libs.test.androidx.core
-    testImplementation libs.test.androidx.compose.ui
-    testImplementation libs.androidx.compose.ui.test.manifest
+    testImplementation(libs.test.junit)
+    testImplementation(libs.test.robolectric)
+    testImplementation(libs.test.mockk)
+    testImplementation(libs.test.mockito.kotlin)
+    testImplementation(libs.test.androidx.core)
+    testImplementation(libs.test.androidx.compose.ui)
+    testImplementation(libs.androidx.compose.ui.test.manifest)
 }
 
 afterEvaluate {
