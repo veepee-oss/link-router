@@ -1,6 +1,13 @@
 Change Log
 ==========
 
+Release 0.5.7
+--------------
+
+### CORE
+ * [update libs](https://jira.vptech.eu/browse/FCAN-3892)
+
+
 Release 0.5.6
 --------------
 
